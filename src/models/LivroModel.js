@@ -1,6 +1,6 @@
 import prisma from '../lib/services/prismaClient.js';
 
-export default class ExemploModel {
+export default class LivroModel {
     constructor({ id = null, nome, estado = true, preco = null } = {}) {
         this.id = id;
         this.nome = nome;

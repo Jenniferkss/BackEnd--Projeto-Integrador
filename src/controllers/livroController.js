@@ -1,4 +1,4 @@
-import ExemploModel from '../models/ExemploModel.js';
+import LivroModel from '../models/LivroModel.js';
 
 export const criar = async (req, res) => {
     try {
@@ -6,19 +6,28 @@ export const criar = async (req, res) => {
             return res.status(400).json({ error: 'Corpo da requisição vazio. Envie os dados!' });
         }
 
-        const { nome, estado, preco } = req.body;
+        const { titulo, preco, autor, dataLancamento,descricao } = req.body;
 
-        if (!nome){
-            return res.status(400).json({ error: 'O campo "nome" é obrigatório!' });
+        if (!titulo){
+            return res.status(400).json({ error: 'O campo "titulo" é obrigatório para um livro!' });
         }
         if (preco === undefined || preco === null) {
             return res.status(400).json({ error: 'O campo "preco" é obrigatório!' });
         }
+        if (!autor) {
+            return res.status(400).json({ error: 'O campo "autor" é obrigatório para um livro!' });
+        }
+        if (!dataLancamento) {
+            return res.status(400).json({ error: 'O campo de  "data de lançamento" é obrigatório para um livro!' });
+        }
+        if (!descricao) {
+            return res.status(400).json({ error: 'O campo "descricao" é obrigatório para um livro!' });
+        }
 
-        const exemplo = new ExemploModel({ nome, estado, preco: parseFloat(preco) });
-        const data = await exemplo.criar();
+        const livro = new LivroModel({ titulo, autor, preco: parseFloat(preco),dataLancamento,descricao });
+        const data = await livro.criar();
 
-        return res.status(201).json({ message: 'Registro criado com sucesso!', data });
+        return res.status(201).json({ message: 'Registro do livro criado com sucesso!', data });
     } catch (error) {
         console.error('Erro ao criar:', error);
         return res.status(500).json({ error: 'Erro interno ao salvar o registro.' });
@@ -27,7 +36,7 @@ export const criar = async (req, res) => {
 
 export const buscarTodos = async (req, res) => {
     try {
-        const registros = await ExemploModel.buscarTodos(req.query);
+        const registros = await LivroModel.buscarTodos(req.query);
 
         if (!registros || registros.length === 0) {
             return res.status(400).json({ message: 'Nenhum registro encontrado.' });
@@ -48,19 +57,20 @@ export const buscarPorId = async (req, res) => {
             return res.status(400).json({ error: 'O ID enviado não é um número válido.' });
         }
 
-        const exemplo = await ExemploModel.buscarPorId(parseInt(id));
+        const livro = await LivroModel.buscarPorId(parseInt(id));
 
-        if (!exemplo) {
+        if (!livro) {
             return res.status(404).json({ error: 'Registro não encontrado.' });
         }
 
-        return res.status(200).json({ data: exemplo });
+        return res.status(200).json({ data: livro });
     } catch (error) {
         console.error('Erro ao buscar:', error);
         return res.status(500).json({ error: 'Erro ao buscar registro.' });
     }
 };
 
+//atualizar e deletar nao foi alterado ainda
 export const atualizar = async (req, res) => {
     try {
         const { id } = req.params;
@@ -73,7 +83,7 @@ export const atualizar = async (req, res) => {
             return res.status(400).json({ error: 'Corpo da requisição vazio. Envie os dados!' });
         }
 
-        const exemplo = await ExemploModel.buscarPorId(parseInt(id));
+        const exemplo = await LivroModel.buscarPorId(parseInt(id));
 
         if (!exemplo) {
             return res.status(404).json({ error: 'Registro não encontrado para atualizar.' });
