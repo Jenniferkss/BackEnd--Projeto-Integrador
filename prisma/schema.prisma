@@ -9,12 +9,36 @@ datasource db {
 model Livro {
     id        Int      @id @default(autoincrement())
     titulo      String
-    preco     Decimal? @db.Decimal(10, 2)
-    imagens     String
+    imagens     String [] @default([])
     autor       String
-    dataLancamento      String
+    dataLancamento      Int
     descricao       String
-    reviews     String
     contextoHistorico     String
-    @@map("exemplo")
+
+    reviews     Reviews[]
+    personagem Personagem[]
+
+    @@map("livro")
+}
+
+model Personagem {
+    id      Int  @id @default(autoincrement())
+    nome    String
+    idade   Int
+    descricao       String
+    imagens     String [] @default([])
+    livroId     Int
+
+    livro Livro?  @relation(fields: [livroId],references: [id])
+    @@map("personagem")
+}
+
+model Reviews {
+     id        Int      @id @default(autoincrement())
+     comentario     String
+
+     livroId     Int
+
+     livro Livro?  @relation(fields: [livroId],references: [id]) 
+     @@map("review")     
 }
