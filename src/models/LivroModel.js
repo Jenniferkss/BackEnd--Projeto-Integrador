@@ -1,55 +1,88 @@
 import prisma from '../lib/services/prismaClient.js';
 
 export default class LivroModel {
-    constructor({ id = null, nome, estado = true, preco = null } = {}) {
+    constructor({ id = null, titulo, imagens = null, preco = null ,autor,dataLancamento,descricao,reviews,contextoHistorico} = {}) {
         this.id = id;
-        this.nome = nome;
-        this.estado = estado;
+        this.titulo = titulo;
+        this.imagens = imagens;
         this.preco = preco;
+        this.autor=autor;
+        this.dataLancamento = dataLancamento;
+        this.descricao = descricao;
+        this.reviews = reviews;
+        this.contextoHistorico = contextoHistorico;
     }
 
     async criar() {
-        return prisma.exemplo.create({
+        return prisma.livro.create({
             data: {
-                nome: this.nome,
-                estado: this.estado,
+                titulo: this.titulo,
+                imagens:this.imagens,
                 preco: this.preco,
+                autor:this.autor,
+                dataLancamento:this.dataLancamento,
+                descricao:this.descricao,
+                reviews:this.descricao,
+                contextoHistorico:this.contextoHistorico
             },
         });
     }
 
     async atualizar() {
-        return prisma.exemplo.update({
+        return prisma.livro.update({
             where: { id: this.id },
-            data: { nome: this.nome, estado: this.estado, preco: this.preco },
+            data: { 
+                titulo: this.titulo,
+                imagens:this.imagens,
+                preco: this.preco,
+                autor:this.autor,
+                dataLancamento:this.dataLancamento,
+                descricao:this.descricao,
+                reviews:this.descricao,
+                contextoHistorico:this.contextoHistorico },
         });
     }
 
     async deletar() {
-        return prisma.exemplo.delete({ where: { id: this.id } });
+        return prisma.livro.delete({ where: { id: this.id } });
     }
 
     static async buscarTodos(filtros = {}) {
         const where = {};
 
-        if (filtros.nome) {
-            where.nome = { contains: filtros.nome, mode: 'insensitive' };
+        if (filtros.titulo) {
+            where.titulo = { contains: filtros.titulo, mode: 'insensitive' };
         }
-        if (filtros.estado !== undefined) {
-            where.estado = filtros.estado === 'true';
+        if (filtros.imagens !== undefined) {
+            where.imagens = filtros.imagens === 'true';
         }
         if (filtros.preco !== undefined) {
             where.preco = parseFloat(filtros.preco);
         }
+         if (filtros.autor !== undefined) {
+            where.autor = filtros.autor === 'true';
+        }
+        if (filtros.dataLancamento !== undefined) {
+            where.dataLancamento = parseFloat(filtros.dataLancamento);
+        }
+         if (filtros.descricao !== undefined) {
+            where.descricao = filtros.descricao === 'true';
+        }
+        if (filtros.reviews !== undefined) {
+            where.reviews = parseFloat(filtros.reviews);
+        }
+         if (filtros.contextoHistorico !== undefined) {
+            where.contextoHistorico = filtros.contextoHistorico === 'true';
+        }
 
-        return prisma.exemplo.findMany({ where });
+        return prisma.livro.findMany({ where });
     }
 
     static async buscarPorId(id) {
-        const data = await prisma.exemplo.findUnique({ where: { id } });
+        const data = await prisma.livro.findUnique({ where: { id } });
         if (!data) {
             return null;
         }
-        return new ExemploModel(data);
+        return new LivroModel(data);
     }
 }
