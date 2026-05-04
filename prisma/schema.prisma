@@ -7,20 +7,20 @@ datasource db {
 }
 
 model Livro {
-    id                  Int               @id @default(autoincrement())
-    tituloPt            String
-    tituloEn            String
+    id                  Int              @id @default(autoincrement())
+    tituloPT            String
+    tituloEN            String
     capaURl             String?
     autor               String
     anoPublicacao       Int?
-    generoPt            String
-    generoEn            String
-    resumoPt            String            @db.Text
-    resumoEn            String            @db.Text
+    generoPT            String
+    generoEN            String
+    descricaoPT         String           @db.Text
+    descricaoEN         String           @db.Text
     personagens         String[]
-    contextoHistoricoPt String            @db.Text
-    contextoHistoricoEn String            @db.Text
-    analisePt           String
+    contextoHistoricoPT String           @db.Text
+    contextoHistoricoEN String           @db.Text
+    analisePT           String
     analiseEN           String
     reviews             Review[]
     videoAulas          Videoaula[]
@@ -38,45 +38,45 @@ model Review {
     autor        String
     comentarioPt String   @db.Text
     comentarioEn String   @db.Text
-    avaliacao    Int      // Ex: 1 a 5 estrelas
+    avaliacao    Int // Ex: 1 a 5 estrelas
     data         DateTime @default(now())
 
     @@map("reviews")
 }
 
 model Videoaula {
-    id           Int      @id @default(autoincrement())
-    livroId      Int
-    livro        Livro    @relation(fields: [livroId], references: [id])
-    tituloPt     String
-    tituloEn     String
-    urlMidia     String
-    descricaoPt  String?  @db.Text
-    descricaoEn  String?  @db.Text
+    id          Int     @id @default(autoincrement())
+    livroId     Int
+    livro       Livro   @relation(fields: [livroId], references: [id])
+    tituloPt    String
+    tituloEn    String
+    urlMidia    String
+    descricaoPt String? @db.Text
+    descricaoEn String? @db.Text
 
     @@map("videoaulas")
 }
 
 model Curiosidade {
-    id           Int      @id @default(autoincrement())
-    livroId      Int
-    livro        Livro    @relation(fields: [livroId], references: [id])
-    tituloPt     String
-    tituloEn     String
-    conteudoPt   String   @db.Text
-    conteudoEn   String   @db.Text
+    id         Int    @id @default(autoincrement())
+    livroId    Int
+    livro      Livro  @relation(fields: [livroId], references: [id])
+    tituloPt   String
+    tituloEn   String
+    conteudoPt String @db.Text
+    conteudoEn String @db.Text
 
     @@map("curiosidades")
 }
 
 model DicaVestibular {
-    id           Int      @id @default(autoincrement())
-    livroId      Int
-    livro        Livro    @relation(fields: [livroId], references: [id])
-    tituloPt     String
-    tituloEn     String
-    conteudoPt   String   @db.Text
-    conteudoEn   String   @db.Text
+    id         Int    @id @default(autoincrement())
+    livroId    Int
+    livro      Livro  @relation(fields: [livroId], references: [id])
+    tituloPt   String
+    tituloEn   String
+    conteudoPt String @db.Text
+    conteudoEn String @db.Text
 
     @@map("dicas_vestibular")
 }
@@ -92,7 +92,6 @@ model Simulado {
 
     @@map("simulados")
 }
-
 
 model Questao {
     id                Int           @id @default(autoincrement())
@@ -118,11 +117,13 @@ model Alternativa {
 
     @@map("alternativas")
 }
+
 model Equipe {
-    id           Int      @id @default(autoincrement())
-    nome         String
-    curso        String
-    objetivoPt   String   @db.Text
-    objetivoEn   String   @db.Text
+    id         Int    @id @default(autoincrement())
+    nome       String
+    curso      String
+    objetivoPt String @db.Text
+    objetivoEn String @db.Text
+
     @@map("equipes")
 }
