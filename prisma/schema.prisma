@@ -7,38 +7,122 @@ datasource db {
 }
 
 model Livro {
-    id        Int      @id @default(autoincrement())
-    titulo      String
-    imagens     String [] @default([])
-    autor       String
-    dataLancamento      Int
-    descricao       String
-    contextoHistorico     String
-
-    reviews     Reviews[]
-    personagem Personagem[]
+    id                  Int               @id @default(autoincrement())
+    tituloPt            String
+    tituloEn            String
+    capaURl             String?
+    autor               String
+    anoPublicacao       Int?
+    generoPt            String
+    generoEn            String
+    resumoPt            String            @db.Text
+    resumoEn            String            @db.Text
+    personagens         String[]
+    contextoHistoricoPt String            @db.Text
+    contextoHistoricoEn String            @db.Text
+    analisePt           String
+    analiseEN           String
+    reviews             Review[]
+    videoAulas          Videoaula[]
+    curiosidades        Curiosidade[]
+    dicasVestibular     DicaVestibular[]
+    simulados           Simulado[]
 
     @@map("livro")
 }
 
-model Personagem {
-    id      Int  @id @default(autoincrement())
-    nome    String
-    idade   Int
-    descricao       String
-    imagens     String [] @default([])
-    livroId     Int
+model Review {
+    id           Int      @id @default(autoincrement())
+    livroId      Int
+    livro        Livro    @relation(fields: [livroId], references: [id])
+    autor        String
+    comentarioPt String   @db.Text
+    comentarioEn String   @db.Text
+    avaliacao    Int      // Ex: 1 a 5 estrelas
+    data         DateTime @default(now())
 
-    livro Livro?  @relation(fields: [livroId],references: [id])
-    @@map("personagem")
+    @@map("reviews")
 }
 
-model Reviews {
-     id        Int      @id @default(autoincrement())
-     comentario     String
+model Videoaula {
+    id           Int      @id @default(autoincrement())
+    livroId      Int
+    livro        Livro    @relation(fields: [livroId], references: [id])
+    tituloPt     String
+    tituloEn     String
+    urlMidia     String
+    descricaoPt  String?  @db.Text
+    descricaoEn  String?  @db.Text
 
-     livroId     Int
+    @@map("videoaulas")
+}
 
-     livro Livro?  @relation(fields: [livroId],references: [id]) 
-     @@map("review")     
+model Curiosidade {
+    id           Int      @id @default(autoincrement())
+    livroId      Int
+    livro        Livro    @relation(fields: [livroId], references: [id])
+    tituloPt     String
+    tituloEn     String
+    conteudoPt   String   @db.Text
+    conteudoEn   String   @db.Text
+
+    @@map("curiosidades")
+}
+
+model DicaVestibular {
+    id           Int      @id @default(autoincrement())
+    livroId      Int
+    livro        Livro    @relation(fields: [livroId], references: [id])
+    tituloPt     String
+    tituloEn     String
+    conteudoPt   String   @db.Text
+    conteudoEn   String   @db.Text
+
+    @@map("dicas_vestibular")
+}
+
+model Simulado {
+    id       Int    @id @default(autoincrement())
+    livroId  Int
+    livro    Livro  @relation(fields: [livroId], references: [id])
+    tituloPt String
+    tituloEn String
+
+    questoes Questao[]
+
+    @@map("simulados")
+}
+
+
+model Questao {
+    id                Int           @id @default(autoincrement())
+    simuladoId        Int
+    simulado          Simulado      @relation(fields: [simuladoId], references: [id])
+    perguntaPt        String        @db.Text
+    perguntaEn        String        @db.Text
+    alternativas      Alternativa[]
+    respostaCorretaPt String        @map("resposta_correta_pt")
+    respostaCorretaEn String        @map("resposta_correta_en")
+    explicacaoPt      String?       @db.Text
+    explicacaoEn      String?       @db.Text
+
+    @@map("questoes")
+}
+
+model Alternativa {
+    id        Int     @id @default(autoincrement())
+    questaoId Int
+    questao   Questao @relation(fields: [questaoId], references: [id])
+    textoPt   String?
+    textoEn   String?
+
+    @@map("alternativas")
+}
+model Equipe {
+    id           Int      @id @default(autoincrement())
+    nome         String
+    curso        String
+    objetivoPt   String   @db.Text
+    objetivoEn   String   @db.Text
+    @@map("equipes")
 }
