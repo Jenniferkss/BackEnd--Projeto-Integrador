@@ -1,29 +1,58 @@
 import prisma from '../lib/services/prismaClient.js';
 
 export default class LivroModel {
-    constructor({ id = null, titulo, imagens = null, preco = null ,autor,dataLancamento,descricao,reviews,contextoHistorico} = {}) {
+    constructor({
+        id = null,
+        tituloPt,
+        tituloEn,
+        capaUrl,
+        autor,
+        anoPublicacao,
+        generoPt,
+        generoEn,
+        descricaoPt,
+        descricaoEn,
+        personagens,
+        contextoHistoricoPt,
+        contextoHistoricoEn,
+        analisePt,
+        analiseEN,
+        reviews,
+    } = {}) {
         this.id = id;
-        this.titulo = titulo;
-        this.imagens = imagens;
-        this.preco = preco;
-        this.autor=autor;
-        this.dataLancamento = dataLancamento;
-        this.descricao = descricao;
+        this.tituloPT = tituloPt;
+        this.tituloEN = tituloEn;
+        this.capaUrl = capaUrl;
+        this.autor = autor;
+        this.anoPublicacao = anoPublicacao;
+        this.generoPT = generoPt;
+        this.generoEN = generoEn;
+        this.descricaoPT = descricaoPt;
+        this.descricaoEN = descricaoEn;
+        this.personagens = personagens;
+        this.contextoHistoricoPT = contextoHistoricoPt;
+        this.contextoHistoricoEN = contextoHistoricoEn;
+        this.analisePT = analisePt;
+        this.analiseEN = analiseEN;
         this.reviews = reviews;
-        this.contextoHistorico = contextoHistorico;
     }
 
     async criar() {
         return prisma.livro.create({
             data: {
-                titulo: this.titulo,
-                imagens:this.imagens,
-                preco: this.preco,
-                autor:this.autor,
-                dataLancamento:this.dataLancamento,
-                descricao:this.descricao,
-                reviews:this.descricao,
-                contextoHistorico:this.contextoHistorico
+                titulo: this.tituloPT,
+                titulo: this.tituloEN,
+                capaUrl: this.capaUrl,
+                autor: this.autor,
+                anoPublicacao: this.anoPublicacao,
+                generoPT: this.generoPT,
+                generoEN: this.generoEN,
+                descricaoPT: this.descricaoPT,
+                descricaoEN: this.descricaoEN,
+                personagens: this.personagens,
+                contextoHistoricoPT: this.contextoHistoricoPT,
+                contextoHistoricoEN: this.contextoHistoricoEN,
+                reviews: this.descricao,
             },
         });
     }
@@ -31,15 +60,16 @@ export default class LivroModel {
     async atualizar() {
         return prisma.livro.update({
             where: { id: this.id },
-            data: { 
-                titulo: this.titulo,
-                imagens:this.imagens,
-                preco: this.preco,
-                autor:this.autor,
-                dataLancamento:this.dataLancamento,
-                descricao:this.descricao,
-                reviews:this.descricao,
-                contextoHistorico:this.contextoHistorico },
+            data: {
+                titulo: this.tituloPT,
+                capa: this.capaUrl,
+                autor: this.autor,
+                dataLancamento: this.dataLancamento,
+                descricaoPT: this.descricaoPT,
+                descricaoEN: this.descricaoEN,
+                reviews: this.descricao,
+                contextoHistoricoPt: this.contextoHistoricoPT,
+            },
         });
     }
 
@@ -59,19 +89,19 @@ export default class LivroModel {
         if (filtros.preco !== undefined) {
             where.preco = parseFloat(filtros.preco);
         }
-         if (filtros.autor !== undefined) {
+        if (filtros.autor !== undefined) {
             where.autor = filtros.autor === 'true';
         }
         if (filtros.dataLancamento !== undefined) {
             where.dataLancamento = parseFloat(filtros.dataLancamento);
         }
-         if (filtros.descricao !== undefined) {
+        if (filtros.descricao !== undefined) {
             where.descricao = filtros.descricao === 'true';
         }
         if (filtros.reviews !== undefined) {
             where.reviews = parseFloat(filtros.reviews);
         }
-         if (filtros.contextoHistorico !== undefined) {
+        if (filtros.contextoHistorico !== undefined) {
             where.contextoHistorico = filtros.contextoHistorico === 'true';
         }
 
