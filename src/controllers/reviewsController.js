@@ -2,7 +2,7 @@ import ReviewsModel from '../models/ReviewsModel.js';
 
 export const criar = async (req, res) => {
     try {
-        if (!req.body) {
+        if (!req.body || Object.keys(req.body).length === 0) {
             return res.status(400).json({ error: 'Corpo da requisição vazio. Envie os dados!' });
         }
 
@@ -24,13 +24,15 @@ export const buscarTodos = async (req, res) => {
         const registros = await ReviewsModel.buscarTodos(req.query);
 
         if (!registros || registros.length === 0) {
-            return res.status(400).json({ message: 'Nenhuma Review encontrada.' });
+            return res.status(200).json([]);
         }
 
         return res.status(200).json(registros);
     } catch (error) {
         console.error('Erro ao buscar:', error);
-        return res.status(500).json({ error: 'Erro ao buscar review.' });
+        return res.status(error.status || 500).json({
+            error: error.status ? error.message : 'Erro ao buscar review.',
+        });
     }
 };
 
@@ -51,7 +53,9 @@ export const buscarPorId = async (req, res) => {
         return res.status(200).json({ data: review });
     } catch (error) {
         console.error('Erro ao buscar:', error);
-        return res.status(500).json({ error: 'Erro ao buscar review.' });
+        return res.status(error.status || 500).json({
+            error: error.status ? error.message : 'Erro ao buscar review.',
+        });
     }
 };
 
@@ -63,7 +67,7 @@ export const atualizar = async (req, res) => {
             return res.status(400).json({ error: 'ID inválido.' });
         }
 
-        if (!req.body) {
+        if (!req.body || Object.keys(req.body).length === 0) {
             return res.status(400).json({ error: 'Corpo da requisição vazio. Envie os dados!' });
         }
 

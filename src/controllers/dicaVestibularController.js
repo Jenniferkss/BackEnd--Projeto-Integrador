@@ -2,7 +2,7 @@ import DicaVestibularModel from '../models/DicaVestibularModel.js';
 
 export const criar = async (req, res) => {
     try {
-        if (!req.body) {
+        if (!req.body || Object.keys(req.body).length === 0) {
             return res.status(400).json({ error: 'Corpo da requisição vazio. Envie os dados!' });
         }
 
@@ -26,13 +26,15 @@ export const buscarTodos = async (req, res) => {
         const registros = await DicaVestibularModel.buscarTodos(req.query);
 
         if (!registros || registros.length === 0) {
-            return res.status(400).json({ message: 'Nenhum registro encontrado.' });
+            return res.status(200).json([]);
         }
 
         return res.status(200).json(registros);
     } catch (error) {
         console.error('Erro ao buscar:', error);
-        return res.status(500).json({ error: 'Erro ao buscar registros.' });
+        return res.status(error.status || 500).json({
+            error: error.status ? error.message : 'Erro ao buscar registros.',
+        });
     }
 };
 
@@ -53,7 +55,9 @@ export const buscarPorId = async (req, res) => {
         return res.status(200).json({ data: dica });
     } catch (error) {
         console.error('Erro ao buscar:', error);
-        return res.status(500).json({ error: 'Erro ao buscar registro.' });
+        return res.status(error.status || 500).json({
+            error: error.status ? error.message : 'Erro ao buscar registro.',
+        });
     }
 };
 
@@ -65,7 +69,7 @@ export const atualizar = async (req, res) => {
             return res.status(400).json({ error: 'ID inválido.' });
         }
 
-        if (!req.body) {
+        if (!req.body || Object.keys(req.body).length === 0) {
             return res.status(400).json({ error: 'Corpo da requisição vazio. Envie os dados!' });
         }
 
@@ -113,6 +117,8 @@ export const deletar = async (req, res) => {
         });
     } catch (error) {
         console.error('Erro ao deletar:', error);
-        return res.status(500).json({ error: 'Erro ao deletar registro.' });
+        return res.status(error.status || 500).json({
+            error: error.status ? error.message : 'Erro ao deletar registro.',
+        });
     }
 };
