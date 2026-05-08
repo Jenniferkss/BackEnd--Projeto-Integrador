@@ -1,4 +1,5 @@
-export const apiKey = (req, res, next) => {
+import 'dotenv/config'
+const autenticar = (req, res, next) => {
     const key = req.headers['x-api-key'];
 
     if (!key || key !== process.env.API_KEY) {
@@ -6,4 +7,6 @@ export const apiKey = (req, res, next) => {
     }
 
     next();
-}
+};
+
+export default autenticar
