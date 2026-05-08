@@ -1,4 +1,11 @@
 import prisma from '../lib/services/prismaClient.js';
+import LivroModel from './LivroModel.js';
+
+const criarErro = (status, message) => {
+    const error = new Error(message);
+    error.status = status;
+    return error;
+};
 
 export default class ReviewsModel {
     constructor({ id = null, comentarioPt, comentarioEn, livroId, autor, avaliacao, data } = {}) {
@@ -11,13 +18,48 @@ export default class ReviewsModel {
         this.data = data;
     }
 
+    validarCampos() {
+        if (!Number.isInteger(Number(this.livroId))) {
+            throw criarErro(400, 'O campo "livroId" é obrigatório para uma review!');
+        }
+
+        if (!this.comentarioPt) {
+            throw criarErro(400, 'O campo "comentarioPt" é obrigatório para uma review!');
+        }
+
+        if (!this.comentarioEn) {
+            throw criarErro(400, 'O campo "comentarioEn" é obrigatório para uma review!');
+        }
+
+        if (!this.autor) {
+            throw criarErro(400, 'O campo "autor" é obrigatório para uma review!');
+        }
+
+        const avaliacaoNumero = Number(this.avaliacao);
+
+        if (!Number.isInteger(avaliacaoNumero) || avaliacaoNumero < 1 || avaliacaoNumero > 5) {
+            throw criarErro(400, 'A avaliacao deve estar entre 1 e 5.');
+        }
+    }
+
+    async garantirLivroExiste() {
+        const livro = await LivroModel.buscarPorId(Number(this.livroId));
+
+        if (!livro) {
+            throw criarErro(404, 'Livro não encontrado.');
+        }
+    }
+
     async criar() {
+        this.validarCampos();
+        await this.garantirLivroExiste();
+
         const data = {
             comentarioPt: this.comentarioPt,
             comentarioEn: this.comentarioEn,
-            livroId: this.livroId,
+            livroId: Number(this.livroId),
             autor: this.autor,
-            avaliacao: this.avaliacao,
+            avaliacao: Number(this.avaliacao),
         };
 
         if (this.data !== undefined && this.data !== null) {
@@ -28,12 +70,15 @@ export default class ReviewsModel {
     }
 
     async atualizar() {
+        this.validarCampos();
+        await this.garantirLivroExiste();
+
         const data = {
             comentarioPt: this.comentarioPt,
             comentarioEn: this.comentarioEn,
-            livroId: this.livroId,
+            livroId: Number(this.livroId),
             autor: this.autor,
-            avaliacao: this.avaliacao,
+            avaliacao: Number(this.avaliacao),
         };
 
         if (this.data !== undefined && this.data !== null) {
