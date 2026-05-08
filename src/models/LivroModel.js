@@ -1,5 +1,11 @@
 import prisma from '../lib/services/prismaClient.js';
 
+const criarErro = (status, message) => {
+    const error = new Error(message);
+    error.status = status;
+    return error;
+};
+
 export default class LivroModel {
     constructor({
         id = null,
@@ -44,14 +50,189 @@ export default class LivroModel {
         this.generoEN = generoEN ?? generoEn ?? genero;
         this.descricaoPT = descricaoPT ?? descricaoPt ?? descricao;
         this.descricaoEN = descricaoEN ?? descricaoEn ?? descricao;
-        this.personagens = personagens;
+        this.personagens = Array.isArray(personagens)
+            ? personagens
+            : typeof personagens === 'string'
+              ? personagens
+                    .split(',')
+                    .map((item) => item.trim())
+                    .filter(Boolean)
+              : personagens;
         this.contextoHistoricoPT = contextoHistoricoPT ?? contextoHistoricoPt ?? contextoHistorico;
         this.contextoHistoricoEN = contextoHistoricoEN ?? contextoHistoricoEn ?? contextoHistorico;
         this.analisePT = analisePT ?? analisePt ?? analise;
         this.analiseEN = analiseEN ?? analiseEn ?? analise;
     }
 
+    validarCampos() {
+        if (!this.tituloPT) {
+            throw criarErro(400, 'O campo "tituloPT" é obrigatório para um livro!');
+        }
+
+        if (!this.tituloEN) {
+            throw criarErro(400, 'O campo "tituloEN" é obrigatório para um livro!');
+        }
+
+        if (!this.autor) {
+            throw criarErro(400, 'O campo "autor" é obrigatório para um livro!');
+        }
+
+        if (!this.generoPT) {
+            throw criarErro(400, 'O campo "generoPT" é obrigatório para um livro!');
+        }
+
+        if (!this.generoEN) {
+            throw criarErro(400, 'O campo "generoEN" é obrigatório para um livro!');
+        }
+
+        if (!this.descricaoPT) {
+            throw criarErro(400, 'O campo "descricaoPT" é obrigatório para um livro!');
+        }
+
+        if (!this.descricaoEN) {
+            throw criarErro(400, 'O campo "descricaoEN" é obrigatório para um livro!');
+        }
+
+        if (!Array.isArray(this.personagens) || this.personagens.length === 0) {
+            throw criarErro(400, 'O campo "personagens" é obrigatório para um livro!');
+        }
+
+        if (!this.contextoHistoricoPT) {
+            throw criarErro(400, 'O campo "contextoHistoricoPT" é obrigatório para um livro!');
+        }
+
+        if (!this.contextoHistoricoEN) {
+            throw criarErro(400, 'O campo "contextoHistoricoEN" é obrigatório para um livro!');
+        }
+
+        if (!this.analisePT) {
+            throw criarErro(400, 'O campo "analisePT" é obrigatório para um livro!');
+        }
+
+        if (!this.analiseEN) {
+            throw criarErro(400, 'O campo "analiseEN" é obrigatório para um livro!');
+        }
+
+        if (
+            this.anoPublicacao !== undefined &&
+            this.anoPublicacao !== null &&
+            this.anoPublicacao !== '' &&
+            !Number.isInteger(Number(this.anoPublicacao))
+        ) {
+            throw criarErro(400, 'O campo "anoPublicacao" deve ser um número válido!');
+        }
+    }
+
+    aplicarDados(dados = {}) {
+        if (
+            dados.tituloPT !== undefined ||
+            dados.tituloPt !== undefined ||
+            dados.titulo !== undefined
+        ) {
+            this.tituloPT = dados.tituloPT ?? dados.tituloPt ?? dados.titulo;
+        }
+
+        if (
+            dados.tituloEN !== undefined ||
+            dados.tituloEn !== undefined ||
+            dados.titulo !== undefined
+        ) {
+            this.tituloEN = dados.tituloEN ?? dados.tituloEn ?? dados.titulo;
+        }
+
+        if (dados.capaURl !== undefined || dados.capaUrl !== undefined) {
+            this.capaURl = dados.capaURl ?? dados.capaUrl;
+        }
+
+        if (dados.autor !== undefined) {
+            this.autor = dados.autor;
+        }
+
+        if (dados.anoPublicacao !== undefined) {
+            this.anoPublicacao = dados.anoPublicacao;
+        }
+
+        if (
+            dados.generoPT !== undefined ||
+            dados.generoPt !== undefined ||
+            dados.genero !== undefined
+        ) {
+            this.generoPT = dados.generoPT ?? dados.generoPt ?? dados.genero;
+        }
+
+        if (
+            dados.generoEN !== undefined ||
+            dados.generoEn !== undefined ||
+            dados.genero !== undefined
+        ) {
+            this.generoEN = dados.generoEN ?? dados.generoEn ?? dados.genero;
+        }
+
+        if (
+            dados.descricaoPT !== undefined ||
+            dados.descricaoPt !== undefined ||
+            dados.descricao !== undefined
+        ) {
+            this.descricaoPT = dados.descricaoPT ?? dados.descricaoPt ?? dados.descricao;
+        }
+
+        if (
+            dados.descricaoEN !== undefined ||
+            dados.descricaoEn !== undefined ||
+            dados.descricao !== undefined
+        ) {
+            this.descricaoEN = dados.descricaoEN ?? dados.descricaoEn ?? dados.descricao;
+        }
+
+        if (dados.personagens !== undefined) {
+            this.personagens = Array.isArray(dados.personagens)
+                ? dados.personagens
+                : typeof dados.personagens === 'string'
+                  ? dados.personagens
+                        .split(',')
+                        .map((item) => item.trim())
+                        .filter(Boolean)
+                  : dados.personagens;
+        }
+
+        if (
+            dados.contextoHistoricoPT !== undefined ||
+            dados.contextoHistoricoPt !== undefined ||
+            dados.contextoHistorico !== undefined
+        ) {
+            this.contextoHistoricoPT =
+                dados.contextoHistoricoPT ?? dados.contextoHistoricoPt ?? dados.contextoHistorico;
+        }
+
+        if (
+            dados.contextoHistoricoEN !== undefined ||
+            dados.contextoHistoricoEn !== undefined ||
+            dados.contextoHistorico !== undefined
+        ) {
+            this.contextoHistoricoEN =
+                dados.contextoHistoricoEN ?? dados.contextoHistoricoEn ?? dados.contextoHistorico;
+        }
+
+        if (
+            dados.analisePT !== undefined ||
+            dados.analisePt !== undefined ||
+            dados.analise !== undefined
+        ) {
+            this.analisePT = dados.analisePT ?? dados.analisePt ?? dados.analise;
+        }
+
+        if (
+            dados.analiseEN !== undefined ||
+            dados.analiseEn !== undefined ||
+            dados.analise !== undefined
+        ) {
+            this.analiseEN = dados.analiseEN ?? dados.analiseEn ?? dados.analise;
+        }
+    }
+
     async criar() {
+        this.validarCampos();
+
         return prisma.livro.create({
             data: {
                 tituloPT: this.tituloPT,
@@ -73,6 +254,8 @@ export default class LivroModel {
     }
 
     async atualizar() {
+        this.validarCampos();
+
         return prisma.livro.update({
             where: { id: this.id },
             data: {

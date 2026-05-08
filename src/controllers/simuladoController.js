@@ -1,16 +1,16 @@
-import VideoAulaModel from '../models/VideoAulaModel.js';
+import SimuladoModel from '../models/SimuladoModel.js';
 
 export const criar = async (req, res) => {
     try {
         if (!req.body) {
-            return res.status(400).json({ error: 'Corpo da requisicao vazio. Envie os dados!' });
+            return res.status(400).json({ error: 'Corpo da requisição vazio. Envie os dados!' });
         }
 
-        const videoAula = new VideoAulaModel(req.body);
+        const simulado = new SimuladoModel(req.body);
 
-        const data = await videoAula.criar();
+        const data = await simulado.criar();
 
-        return res.status(201).json({ message: 'Registro da videoaula criado com sucesso!', data });
+        return res.status(201).json({ message: 'Registro de simulado criado com sucesso!', data });
     } catch (error) {
         console.error('Erro ao criar:', error);
         return res.status(error.status || 500).json({
@@ -21,7 +21,7 @@ export const criar = async (req, res) => {
 
 export const buscarTodos = async (req, res) => {
     try {
-        const registros = await VideoAulaModel.buscarTodos(req.query);
+        const registros = await SimuladoModel.buscarTodos(req.query);
 
         if (!registros || registros.length === 0) {
             return res.status(400).json({ message: 'Nenhum registro encontrado.' });
@@ -39,16 +39,16 @@ export const buscarPorId = async (req, res) => {
         const { id } = req.params;
 
         if (isNaN(id)) {
-            return res.status(400).json({ error: 'O ID enviado nao e um numero valido.' });
+            return res.status(400).json({ error: 'O ID enviado não é um número válido.' });
         }
 
-        const videoAula = await VideoAulaModel.buscarPorId(parseInt(id));
+        const simulado = await SimuladoModel.buscarPorId(parseInt(id));
 
-        if (!videoAula) {
-            return res.status(404).json({ error: 'Registro nao encontrado.' });
+        if (!simulado) {
+            return res.status(404).json({ error: 'Registro não encontrado.' });
         }
 
-        return res.status(200).json({ data: videoAula });
+        return res.status(200).json({ data: simulado });
     } catch (error) {
         console.error('Erro ao buscar:', error);
         return res.status(500).json({ error: 'Erro ao buscar registro.' });
@@ -60,26 +60,27 @@ export const atualizar = async (req, res) => {
         const { id } = req.params;
 
         if (isNaN(id)) {
-            return res.status(400).json({ error: 'ID invalido.' });
+            return res.status(400).json({ error: 'ID inválido.' });
         }
 
         if (!req.body) {
-            return res.status(400).json({ error: 'Corpo da requisicao vazio. Envie os dados!' });
+            return res.status(400).json({ error: 'Corpo da requisição vazio. Envie os dados!' });
         }
 
-        const videoAula = await VideoAulaModel.buscarPorId(parseInt(id));
+        const simulado = await SimuladoModel.buscarPorId(parseInt(id));
 
-        if (!videoAula) {
-            return res.status(404).json({ error: 'Registro nao encontrado para atualizar.' });
+        if (!simulado) {
+            return res.status(404).json({ error: 'Registro não encontrado para atualizar.' });
         }
 
-        Object.assign(videoAula, req.body);
+        Object.assign(simulado, req.body);
 
-        const data = await videoAula.atualizar();
+        const data = await simulado.atualizar();
 
-        return res
-            .status(200)
-            .json({ message: `O registro "${data.tituloPt}" foi atualizado com sucesso!`, data });
+        return res.status(200).json({
+            message: `O registro "${data.tituloPt}" foi atualizado com sucesso!`,
+            data,
+        });
     } catch (error) {
         console.error('Erro ao atualizar:', error);
         return res.status(error.status || 500).json({
@@ -93,20 +94,20 @@ export const deletar = async (req, res) => {
         const { id } = req.params;
 
         if (isNaN(id)) {
-            return res.status(400).json({ error: 'ID invalido.' });
+            return res.status(400).json({ error: 'ID inválido.' });
         }
 
-        const videoAula = await VideoAulaModel.buscarPorId(parseInt(id));
+        const simulado = await SimuladoModel.buscarPorId(parseInt(id));
 
-        if (!videoAula) {
-            return res.status(404).json({ error: 'Registro nao encontrado para deletar.' });
+        if (!simulado) {
+            return res.status(404).json({ error: 'Registro não encontrado para deletar.' });
         }
 
-        await videoAula.deletar();
+        await simulado.deletar();
 
         return res.status(200).json({
-            message: `O registro "${videoAula.tituloPt}" foi deletado com sucesso!`,
-            deletado: videoAula,
+            message: `O registro "${simulado.tituloPt}" foi deletado com sucesso!`,
+            deletado: simulado,
         });
     } catch (error) {
         console.error('Erro ao deletar:', error);

@@ -7,40 +7,25 @@ const criarErro = (status, message) => {
     return error;
 };
 
-export default class VideoAulaModel {
-    constructor({
-        id = null,
-        livroId,
-        tituloPt,
-        tituloEn,
-        urlMidia,
-        descricaoPt,
-        descricaoEn,
-    } = {}) {
+export default class SimuladoModel {
+    constructor({ id = null, livroId, tituloPt, tituloEn } = {}) {
         this.id = id;
         this.livroId = livroId;
         this.tituloPt = tituloPt;
         this.tituloEn = tituloEn;
-        this.urlMidia = urlMidia;
-        this.descricaoPt = descricaoPt;
-        this.descricaoEn = descricaoEn;
     }
 
     validarCampos() {
         if (!Number.isInteger(Number(this.livroId))) {
-            throw criarErro(400, 'O campo "livroId" é obrigatório para uma videoaula!');
+            throw criarErro(400, 'O campo "livroId" é obrigatório para um simulado!');
         }
 
         if (!this.tituloPt) {
-            throw criarErro(400, 'O campo "tituloPt" é obrigatório para uma videoaula!');
+            throw criarErro(400, 'O campo "tituloPt" é obrigatório para um simulado!');
         }
 
         if (!this.tituloEn) {
-            throw criarErro(400, 'O campo "tituloEn" é obrigatório para uma videoaula!');
-        }
-
-        if (!this.urlMidia) {
-            throw criarErro(400, 'O campo "urlMidia" é obrigatório para uma videoaula!');
+            throw criarErro(400, 'O campo "tituloEn" é obrigatório para um simulado!');
         }
     }
 
@@ -56,14 +41,11 @@ export default class VideoAulaModel {
         this.validarCampos();
         await this.garantirLivroExiste();
 
-        return prisma.videoaula.create({
+        return prisma.simulado.create({
             data: {
                 livroId: Number(this.livroId),
                 tituloPt: this.tituloPt,
                 tituloEn: this.tituloEn,
-                urlMidia: this.urlMidia,
-                descricaoPt: this.descricaoPt,
-                descricaoEn: this.descricaoEn,
             },
         });
     }
@@ -72,21 +54,18 @@ export default class VideoAulaModel {
         this.validarCampos();
         await this.garantirLivroExiste();
 
-        return prisma.videoaula.update({
+        return prisma.simulado.update({
             where: { id: this.id },
             data: {
                 livroId: Number(this.livroId),
                 tituloPt: this.tituloPt,
                 tituloEn: this.tituloEn,
-                urlMidia: this.urlMidia,
-                descricaoPt: this.descricaoPt,
-                descricaoEn: this.descricaoEn,
             },
         });
     }
 
     async deletar() {
-        return prisma.videoaula.delete({ where: { id: this.id } });
+        return prisma.simulado.delete({ where: { id: this.id } });
     }
 
     static async buscarTodos(filtros = {}) {
@@ -106,11 +85,7 @@ export default class VideoAulaModel {
             ];
         }
 
-        if (filtros.urlMidia) {
-            where.urlMidia = { contains: filtros.urlMidia, mode: 'insensitive' };
-        }
-
-        return prisma.videoaula.findMany({ where });
+        return prisma.simulado.findMany({ where });
     }
 
     static async buscarPorId(id) {
@@ -120,12 +95,12 @@ export default class VideoAulaModel {
             return null;
         }
 
-        const data = await prisma.videoaula.findUnique({ where: { id: idNumero } });
+        const data = await prisma.simulado.findUnique({ where: { id: idNumero } });
 
         if (!data) {
             return null;
         }
 
-        return new VideoAulaModel(data);
+        return new SimuladoModel(data);
     }
 }

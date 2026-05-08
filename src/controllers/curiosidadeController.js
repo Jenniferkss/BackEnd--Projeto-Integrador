@@ -1,14 +1,18 @@
-import LivroModel from '../models/LivroModel.js';
+import CuriosidadeModel from '../models/CuriosidadeModel.js';
 
 export const criar = async (req, res) => {
     try {
         if (!req.body) {
             return res.status(400).json({ error: 'Corpo da requisição vazio. Envie os dados!' });
         }
-        const livro = new LivroModel(req.body);
-        const data = await livro.criar();
 
-        return res.status(201).json({ message: 'Registro do livro criado com sucesso!', data });
+        const curiosidade = new CuriosidadeModel(req.body);
+
+        const data = await curiosidade.criar();
+
+        return res
+            .status(201)
+            .json({ message: 'Registro de curiosidade criado com sucesso!', data });
     } catch (error) {
         console.error('Erro ao criar:', error);
         return res.status(error.status || 500).json({
@@ -19,7 +23,7 @@ export const criar = async (req, res) => {
 
 export const buscarTodos = async (req, res) => {
     try {
-        const registros = await LivroModel.buscarTodos(req.query);
+        const registros = await CuriosidadeModel.buscarTodos(req.query);
 
         if (!registros || registros.length === 0) {
             return res.status(400).json({ message: 'Nenhum registro encontrado.' });
@@ -40,13 +44,13 @@ export const buscarPorId = async (req, res) => {
             return res.status(400).json({ error: 'O ID enviado não é um número válido.' });
         }
 
-        const livro = await LivroModel.buscarPorId(parseInt(id));
+        const curiosidade = await CuriosidadeModel.buscarPorId(parseInt(id));
 
-        if (!livro) {
+        if (!curiosidade) {
             return res.status(404).json({ error: 'Registro não encontrado.' });
         }
 
-        return res.status(200).json({ data: livro });
+        return res.status(200).json({ data: curiosidade });
     } catch (error) {
         console.error('Erro ao buscar:', error);
         return res.status(500).json({ error: 'Erro ao buscar registro.' });
@@ -65,19 +69,20 @@ export const atualizar = async (req, res) => {
             return res.status(400).json({ error: 'Corpo da requisição vazio. Envie os dados!' });
         }
 
-        const livro = await LivroModel.buscarPorId(parseInt(id));
+        const curiosidade = await CuriosidadeModel.buscarPorId(parseInt(id));
 
-        if (!livro) {
+        if (!curiosidade) {
             return res.status(404).json({ error: 'Registro não encontrado para atualizar.' });
         }
 
-        livro.aplicarDados(req.body);
+        Object.assign(curiosidade, req.body);
 
-        const data = await livro.atualizar();
+        const data = await curiosidade.atualizar();
 
-        return res
-            .status(200)
-            .json({ message: `O registro "${data.tituloPT}" foi atualizado com sucesso!`, data });
+        return res.status(200).json({
+            message: `O registro "${data.tituloPt}" foi atualizado com sucesso!`,
+            data,
+        });
     } catch (error) {
         console.error('Erro ao atualizar:', error);
         return res.status(error.status || 500).json({
@@ -94,17 +99,17 @@ export const deletar = async (req, res) => {
             return res.status(400).json({ error: 'ID inválido.' });
         }
 
-        const livro = await LivroModel.buscarPorId(parseInt(id));
+        const curiosidade = await CuriosidadeModel.buscarPorId(parseInt(id));
 
-        if (!livro) {
+        if (!curiosidade) {
             return res.status(404).json({ error: 'Registro não encontrado para deletar.' });
         }
 
-        await livro.deletar();
+        await curiosidade.deletar();
 
         return res.status(200).json({
-            message: `O registro "${livro.tituloPT}" foi deletado com sucesso!`,
-            deletado: livro,
+            message: `O registro "${curiosidade.tituloPt}" foi deletado com sucesso!`,
+            deletado: curiosidade,
         });
     } catch (error) {
         console.error('Erro ao deletar:', error);

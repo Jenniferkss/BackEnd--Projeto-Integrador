@@ -1,62 +1,21 @@
-import LivroModel from '../models/LivroModel.js';
 import ReviewsModel from '../models/ReviewsModel.js';
 
 export const criar = async (req, res) => {
     try {
-        if (!req.body || Object.keys(req.body).length === 0) {
+        if (!req.body) {
             return res.status(400).json({ error: 'Corpo da requisição vazio. Envie os dados!' });
         }
 
-        const { comentarioPt, livroId, autor, comentarioEn, avaliacao } = req.body;
-        const livroIdNumero = Number(livroId);
-        const avaliacaoNumero = Number(avaliacao);
-
-        if (!comentarioPt) {
-            return res
-                .status(400)
-                .json({ error: 'O campo "comentarioPt" é obrigatório para uma review!' });
-        }
-
-        if (!comentarioEn) {
-            return res
-                .status(400)
-                .json({ error: 'O campo "comentarioEn" é obrigatório para uma review!' });
-        }
-
-        if (!autor) {
-            return res
-                .status(400)
-                .json({ error: 'O campo "autor" é obrigatório para uma review!' });
-        }
-
-        if (!Number.isInteger(livroIdNumero)) {
-            return res.status(400).json({ error: 'O campo "livroId" deve ser um número válido!' });
-        }
-
-        if (!Number.isInteger(avaliacaoNumero) || avaliacaoNumero < 1 || avaliacaoNumero > 5) {
-            return res.status(400).json({ error: 'A avaliacao deve estar entre 1 e 5.' });
-        }
-
-        const livroExiste = await LivroModel.buscarPorId(livroIdNumero);
-
-        if (!livroExiste) {
-            return res.status(404).json({ error: 'Livro não encontrado.' });
-        }
-
-        const review = new ReviewsModel({
-            comentarioPt,
-            comentarioEn,
-            livroId: livroIdNumero,
-            autor,
-            avaliacao: avaliacaoNumero,
-        });
+        const review = new ReviewsModel(req.body);
 
         const data = await review.criar();
 
         return res.status(201).json({ message: 'Review do livro criada com sucesso!', data });
     } catch (error) {
         console.error('Erro ao criar:', error);
-        return res.status(500).json({ error: 'Erro interno ao salvar a Review.' });
+        return res.status(error.status || 500).json({
+            error: error.status ? error.message : 'Erro interno ao salvar a Review.',
+        });
     }
 };
 
@@ -104,7 +63,7 @@ export const atualizar = async (req, res) => {
             return res.status(400).json({ error: 'ID inválido.' });
         }
 
-        if (!req.body || Object.keys(req.body).length === 0) {
+        if (!req.body) {
             return res.status(400).json({ error: 'Corpo da requisição vazio. Envie os dados!' });
         }
 
@@ -114,61 +73,16 @@ export const atualizar = async (req, res) => {
             return res.status(404).json({ error: 'Review não encontrada para atualizar.' });
         }
 
-        if (req.body.comentarioPt !== undefined) {
-            if (!req.body.comentarioPt) {
-                return res.status(400).json({ error: 'comentarioPt não pode ser vazio.' });
-            }
-            review.comentarioPt = req.body.comentarioPt;
-        }
-
-        if (req.body.comentarioEn !== undefined) {
-            if (!req.body.comentarioEn) {
-                return res.status(400).json({ error: 'comentarioEn não pode ser vazio.' });
-            }
-            review.comentarioEn = req.body.comentarioEn;
-        }
-
-        if (req.body.autor !== undefined) {
-            if (!req.body.autor) {
-                return res.status(400).json({ error: 'autor não pode ser vazio.' });
-            }
-            review.autor = req.body.autor;
-        }
-
-        if (req.body.livroId !== undefined) {
-            const livroIdNumero = Number(req.body.livroId);
-
-            if (!Number.isInteger(livroIdNumero)) {
-                return res
-                    .status(400)
-                    .json({ error: 'O campo "livroId" deve ser um número válido!' });
-            }
-
-            const livroExiste = await LivroModel.buscarPorId(livroIdNumero);
-
-            if (!livroExiste) {
-                return res.status(404).json({ error: 'Livro não encontrado.' });
-            }
-
-            review.livroId = livroIdNumero;
-        }
-
-        if (req.body.avaliacao !== undefined) {
-            const avaliacaoNumero = Number(req.body.avaliacao);
-
-            if (!Number.isInteger(avaliacaoNumero) || avaliacaoNumero < 1 || avaliacaoNumero > 5) {
-                return res.status(400).json({ error: 'A avaliacao deve estar entre 1 e 5.' });
-            }
-
-            review.avaliacao = avaliacaoNumero;
-        }
+        Object.assign(review, req.body);
 
         const data = await review.atualizar();
 
         return res.status(200).json({ message: 'Review atualizada com sucesso!', data });
     } catch (error) {
         console.error('Erro ao atualizar:', error);
-        return res.status(500).json({ error: 'Erro ao atualizar review.' });
+        return res.status(error.status || 500).json({
+            error: error.status ? error.message : 'Erro ao atualizar review.',
+        });
     }
 };
 
@@ -188,14 +102,14 @@ export const deletar = async (req, res) => {
 
         await review.deletar();
 
-        return res
-            .status(200)
-            .json({
-                message: `A review de ID ${review.id} foi deletada com sucesso!`,
-                deletado: review,
-            });
+        return res.status(200).json({
+            message: `A review de ID ${review.id} foi deletada com sucesso!`,
+            deletado: review,
+        });
     } catch (error) {
         console.error('Erro ao deletar:', error);
-        return res.status(500).json({ error: 'Erro ao deletar review.' });
+        return res.status(error.status || 500).json({
+            error: error.status ? error.message : 'Erro ao deletar review.',
+        });
     }
 };

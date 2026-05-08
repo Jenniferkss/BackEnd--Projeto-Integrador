@@ -7,40 +7,35 @@ const criarErro = (status, message) => {
     return error;
 };
 
-export default class VideoAulaModel {
-    constructor({
-        id = null,
-        livroId,
-        tituloPt,
-        tituloEn,
-        urlMidia,
-        descricaoPt,
-        descricaoEn,
-    } = {}) {
+export default class DicaVestibularModel {
+    constructor({ id = null, livroId, tituloPt, tituloEn, conteudoPt, conteudoEn } = {}) {
         this.id = id;
         this.livroId = livroId;
         this.tituloPt = tituloPt;
         this.tituloEn = tituloEn;
-        this.urlMidia = urlMidia;
-        this.descricaoPt = descricaoPt;
-        this.descricaoEn = descricaoEn;
+        this.conteudoPt = conteudoPt;
+        this.conteudoEn = conteudoEn;
     }
 
     validarCampos() {
         if (!Number.isInteger(Number(this.livroId))) {
-            throw criarErro(400, 'O campo "livroId" é obrigatório para uma videoaula!');
+            throw criarErro(400, 'O campo "livroId" é obrigatório para uma dica de vestibular!');
         }
 
         if (!this.tituloPt) {
-            throw criarErro(400, 'O campo "tituloPt" é obrigatório para uma videoaula!');
+            throw criarErro(400, 'O campo "tituloPt" é obrigatório para uma dica de vestibular!');
         }
 
         if (!this.tituloEn) {
-            throw criarErro(400, 'O campo "tituloEn" é obrigatório para uma videoaula!');
+            throw criarErro(400, 'O campo "tituloEn" é obrigatório para uma dica de vestibular!');
         }
 
-        if (!this.urlMidia) {
-            throw criarErro(400, 'O campo "urlMidia" é obrigatório para uma videoaula!');
+        if (!this.conteudoPt) {
+            throw criarErro(400, 'O campo "conteudoPt" é obrigatório para uma dica de vestibular!');
+        }
+
+        if (!this.conteudoEn) {
+            throw criarErro(400, 'O campo "conteudoEn" é obrigatório para uma dica de vestibular!');
         }
     }
 
@@ -56,14 +51,13 @@ export default class VideoAulaModel {
         this.validarCampos();
         await this.garantirLivroExiste();
 
-        return prisma.videoaula.create({
+        return prisma.dicaVestibular.create({
             data: {
                 livroId: Number(this.livroId),
                 tituloPt: this.tituloPt,
                 tituloEn: this.tituloEn,
-                urlMidia: this.urlMidia,
-                descricaoPt: this.descricaoPt,
-                descricaoEn: this.descricaoEn,
+                conteudoPt: this.conteudoPt,
+                conteudoEn: this.conteudoEn,
             },
         });
     }
@@ -72,21 +66,20 @@ export default class VideoAulaModel {
         this.validarCampos();
         await this.garantirLivroExiste();
 
-        return prisma.videoaula.update({
+        return prisma.dicaVestibular.update({
             where: { id: this.id },
             data: {
                 livroId: Number(this.livroId),
                 tituloPt: this.tituloPt,
                 tituloEn: this.tituloEn,
-                urlMidia: this.urlMidia,
-                descricaoPt: this.descricaoPt,
-                descricaoEn: this.descricaoEn,
+                conteudoPt: this.conteudoPt,
+                conteudoEn: this.conteudoEn,
             },
         });
     }
 
     async deletar() {
-        return prisma.videoaula.delete({ where: { id: this.id } });
+        return prisma.dicaVestibular.delete({ where: { id: this.id } });
     }
 
     static async buscarTodos(filtros = {}) {
@@ -106,11 +99,15 @@ export default class VideoAulaModel {
             ];
         }
 
-        if (filtros.urlMidia) {
-            where.urlMidia = { contains: filtros.urlMidia, mode: 'insensitive' };
+        if (filtros.conteudo) {
+            where.OR = [
+                ...(where.OR || []),
+                { conteudoPt: { contains: filtros.conteudo, mode: 'insensitive' } },
+                { conteudoEn: { contains: filtros.conteudo, mode: 'insensitive' } },
+            ];
         }
 
-        return prisma.videoaula.findMany({ where });
+        return prisma.dicaVestibular.findMany({ where });
     }
 
     static async buscarPorId(id) {
@@ -120,12 +117,12 @@ export default class VideoAulaModel {
             return null;
         }
 
-        const data = await prisma.videoaula.findUnique({ where: { id: idNumero } });
+        const data = await prisma.dicaVestibular.findUnique({ where: { id: idNumero } });
 
         if (!data) {
             return null;
         }
 
-        return new VideoAulaModel(data);
+        return new DicaVestibularModel(data);
     }
 }
