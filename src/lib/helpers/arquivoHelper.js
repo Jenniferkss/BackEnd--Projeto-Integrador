@@ -7,7 +7,17 @@ const BUCKET = 'arquivos';
 const prepararFoto = async (buffer) =>
     sharp(buffer).resize({ width: 800, withoutEnlargement: true }).webp({ quality: 80 }).toBuffer();
 
+const garantirSupabaseConfigurado = () => {
+    if (!supabase) {
+        throw new Error(
+            'Supabase não configurado. Defina SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY.'
+        );
+    }
+};
+
 export const upload = async (id, file) => {
+    garantirSupabaseConfigurado();
+
     const ehFoto = file.mimetype.startsWith('image/');
 
     const buffer = ehFoto ? await prepararFoto(file.buffer) : file.buffer;
@@ -28,6 +38,8 @@ export const upload = async (id, file) => {
 };
 
 export const deletar = async (url) => {
+    garantirSupabaseConfigurado();
+
     const path = url.split(`${BUCKET}/`)[1];
 
     const { error } = await supabase.storage.from(BUCKET).remove([path]);
