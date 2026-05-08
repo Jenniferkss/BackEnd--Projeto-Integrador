@@ -21,7 +21,8 @@
     "html-pdf-node": "^1.0.8",
     "multer": "^2.1.1",
     "pg": "^8.20.0",
-    "sharp": "^0.34.5"
+    "sharp": "^0.34.5",
+    "supabase": "^2.98.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.14",

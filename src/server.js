@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
+import { apiKey } from './lib/middlewares/apiKey.js';
 import livroRoutes from './routes/LivroRoute.js';
 import alternativaRoutes from './routes/alternativaRoute.js';
 import curiosidadeRoutes from './routes/curiosidadeRoute.js';
@@ -14,6 +15,7 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
+app.use('/api', apiKey);
 
 app.get('/', (req, res) => {
     res.send('🚀 API funcionando');
