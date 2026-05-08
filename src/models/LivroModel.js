@@ -230,6 +230,18 @@ export default class LivroModel {
         }
     }
 
+    normalizarAnoPublicacao() {
+        if (
+            this.anoPublicacao === undefined ||
+            this.anoPublicacao === null ||
+            this.anoPublicacao === ''
+        ) {
+            return undefined;
+        }
+
+        return Number(this.anoPublicacao);
+    }
+
     async criar() {
         this.validarCampos();
 
@@ -239,7 +251,7 @@ export default class LivroModel {
                 tituloEN: this.tituloEN,
                 capaURl: this.capaURl,
                 autor: this.autor,
-                anoPublicacao: this.anoPublicacao,
+                anoPublicacao: this.normalizarAnoPublicacao(),
                 generoPT: this.generoPT,
                 generoEN: this.generoEN,
                 descricaoPT: this.descricaoPT,
@@ -263,7 +275,7 @@ export default class LivroModel {
                 tituloEN: this.tituloEN,
                 capaURl: this.capaURl,
                 autor: this.autor,
-                anoPublicacao: this.anoPublicacao,
+                anoPublicacao: this.normalizarAnoPublicacao(),
                 generoPT: this.generoPT,
                 generoEN: this.generoEN,
                 descricaoPT: this.descricaoPT,

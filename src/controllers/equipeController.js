@@ -42,7 +42,9 @@ export const criar = async (req, res) => {
         return res.status(201).json({ message: 'Registro da equipe criado com sucesso!', data });
     } catch (error) {
         console.error('Erro ao criar:', error);
-        return res.status(500).json({ error: 'Erro interno ao salvar o registro.' });
+        return res.status(error.status || 500).json({
+            error: error.status ? error.message : 'Erro interno ao salvar o registro.',
+        });
     }
 };
 
@@ -57,7 +59,9 @@ export const buscarTodos = async (req, res) => {
         return res.status(200).json(registros);
     } catch (error) {
         console.error('Erro ao buscar:', error);
-        return res.status(500).json({ error: 'Erro ao buscar registros.' });
+        return res.status(error.status || 500).json({
+            error: error.status ? error.message : 'Erro ao buscar registros.',
+        });
     }
 };
 
@@ -78,7 +82,9 @@ export const buscarPorId = async (req, res) => {
         return res.status(200).json({ data: equipe });
     } catch (error) {
         console.error('Erro ao buscar:', error);
-        return res.status(500).json({ error: 'Erro ao buscar registro.' });
+        return res.status(error.status || 500).json({
+            error: error.status ? error.message : 'Erro ao buscar registro.',
+        });
     }
 };
 
@@ -123,7 +129,9 @@ export const atualizar = async (req, res) => {
             .json({ message: `O registro "${data.nome}" foi atualizado com sucesso!`, data });
     } catch (error) {
         console.error('Erro ao atualizar:', error);
-        return res.status(500).json({ error: 'Erro ao atualizar registro.' });
+        return res.status(error.status || 500).json({
+            error: error.status ? error.message : 'Erro ao atualizar registro.',
+        });
     }
 };
 
@@ -143,14 +151,14 @@ export const deletar = async (req, res) => {
 
         await equipe.deletar();
 
-        return res
-            .status(200)
-            .json({
-                message: `O registro "${equipe.nome}" foi deletado com sucesso!`,
-                deletado: equipe,
-            });
+        return res.status(200).json({
+            message: `O registro "${equipe.nome}" foi deletado com sucesso!`,
+            deletado: equipe,
+        });
     } catch (error) {
         console.error('Erro ao deletar:', error);
-        return res.status(500).json({ error: 'Erro ao deletar registro.' });
+        return res.status(error.status || 500).json({
+            error: error.status ? error.message : 'Erro ao deletar registro.',
+        });
     }
 };

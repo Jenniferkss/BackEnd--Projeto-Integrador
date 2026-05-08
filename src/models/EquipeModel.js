@@ -1,5 +1,11 @@
 import prisma from '../lib/services/prismaClient.js';
 
+const erroValidacao = (status, message) => {
+    const error = new Error(message);
+    error.status = status;
+    return error;
+};
+
 export default class EquipeModel {
     constructor({ id = null, nome, curso, objetivoPt, objetivoEn } = {}) {
         this.id = id;
@@ -11,19 +17,19 @@ export default class EquipeModel {
 
     validarCampos() {
         if (!this.nome) {
-            throw new Error('O campo "nome" é obrigatório para uma equipe!');
+            throw erroValidacao(400, 'O campo "nome" é obrigatório para uma equipe!');
         }
 
         if (!this.curso) {
-            throw new Error('O campo "curso" é obrigatório para uma equipe!');
+            throw erroValidacao(400, 'O campo "curso" é obrigatório para uma equipe!');
         }
 
         if (!this.objetivoPt) {
-            throw new Error('O campo "objetivoPt" é obrigatório para uma equipe!');
+            throw erroValidacao(400, 'O campo "objetivoPt" é obrigatório para uma equipe!');
         }
 
         if (!this.objetivoEn) {
-            throw new Error('O campo "objetivoEn" é obrigatório para uma equipe!');
+            throw erroValidacao(400, 'O campo "objetivoEn" é obrigatório para uma equipe!');
         }
     }
 
