@@ -1,3 +1,4 @@
+// seed.js
 import { PrismaPg } from '@prisma/adapter-pg';
 import pkg from '@prisma/client';
 import 'dotenv/config';
@@ -26,98 +27,188 @@ async function main() {
 
     console.log('📦 Inserindo novos registros...');
 
+    // 📚 Livro: Dom Casmurro
     await prisma.livro.create({
         data: {
-            tituloPT: 'Quarto de Despejo: Diário de uma Favelada',
-            tituloEN: 'Child of the Dark: The Diary of Carolina Maria de Jesus',
-            capaURl: 'https://exemplo.com/capa-quarto-despejo.jpg',
-            autor: 'Carolina Maria de Jesus',
-            anoPublicacao: 1960,
-            generoPT: 'Autobiografia, Literatura Testemunhal',
-            generoEN: 'Autobiography, Testimonial Literature',
+            tituloPT: 'Dom Casmurro',
+            tituloEN: 'Dom Casmurro',
+            capaURl: 'https://exemplo.com/capa-dom-casmurro.jpg',
+            autor: 'Machado de Assis',
+            anoPublicacao: 1899,
+            generoPT: 'Romance, Realismo Brasileiro',
+            generoEN: 'Novel, Brazilian Realism',
             descricaoPT:
-                'O diário de Carolina Maria de Jesus relata o cotidiano de miséria, fome e sobrevivência na favela do Canindé, em São Paulo.',
+                'Narrado por Bentinho, o romance explora ciúmes, memória e ambiguidade na relação com Capitu, questionando a confiabilidade do narrador.',
             descricaoEN:
-                'The diary of Carolina Maria de Jesus reports the daily life of misery, hunger, and survival in the Canindé favela, in São Paulo.',
-            personagens: ['Carolina', 'João José', 'José Carlos', 'Vera Eunice'],
+                "Narrated by Bentinho, the novel explores jealousy, memory, and ambiguity in his relationship with Capitu, questioning the narrator's reliability.",
+            personagens: [
+                'Bentinho (Dom Casmurro)',
+                'Capitu',
+                'Ezequiel',
+                'José Dias',
+                'Sancha',
+                'Escobar',
+            ],
             contextoHistoricoPT:
-                'Brasil dos anos 50, urbanização acelerada e a marginalização das populações periféricas.',
+                'Brasil do século XIX, Rio de Janeiro imperial, ascensão da burguesia e influências do Realismo europeu.',
             contextoHistoricoEN:
-                '1950s Brazil, rapid urbanization, and the marginalization of peripheral populations.',
+                '19th century Brazil, Imperial Rio de Janeiro, rise of the bourgeoisie, and influences of European Realism.',
             analisePT:
-                'A obra utiliza uma linguagem crua para denunciar a estrutura social brasileira e a personificação da fome.',
+                'Obra-prima da ironia machadiana: o foco narrativo em primeira pessoa cria dúvida sobre a traição de Capitu, convidando o leitor a interpretar.',
             analiseEN:
-                'The work uses raw language to denounce the Brazilian social structure and the personification of hunger.',
+                "A masterpiece of Machadian irony: the first-person narration casts doubt on Capitu's alleged betrayal, inviting reader interpretation.",
             reviews: {
                 create: [
                     {
-                        autor: 'Leitor Atento',
-                        comentarioPt: 'Uma leitura necessária e transformadora.',
-                        comentarioEn: 'A necessary and transformative read.',
+                        autor: 'Prof. Literatura',
+                        comentarioPt:
+                            'Leitura essencial para entender o Realismo no Brasil. A ambiguidade é genial.',
+                        comentarioEn:
+                            'Essential reading to understand Brazilian Realism. The ambiguity is brilliant.',
                         avaliacao: 5,
+                    },
+                    {
+                        autor: 'Estudante Vestibular',
+                        comentarioPt:
+                            'Desafiador, mas recompensador. A narrativa não linear exige atenção.',
+                        comentarioEn:
+                            'Challenging but rewarding. The non-linear narrative demands attention.',
+                        avaliacao: 4,
                     },
                 ],
             },
             videoAulas: {
                 create: [
                     {
-                        tituloPt: 'Análise Completa: Quarto de Despejo',
-                        tituloEn: 'Full Analysis: Child of the Dark',
-                        urlMidia: 'https://www.youtube.com/watch?v=exemplo',
-                        descricaoPt: 'Aula focada em aspectos sociais e literários.',
-                        descricaoEn: 'Class focused on social and literary aspects.',
+                        tituloPt: 'Dom Casmurro: Narrador Confiável?',
+                        tituloEn: 'Dom Casmurro: Is the Narrator Reliable?',
+                        urlMidia: 'https://www.youtube.com/watch?v=exemplo1',
+                        descricaoPt: 'Análise da focalização narrativa e recursos de ambiguidade.',
+                        descricaoEn: 'Analysis of narrative focalization and ambiguity devices.',
+                    },
+                    {
+                        tituloPt: 'Capitu: Vítima ou Vilã?',
+                        tituloEn: 'Capitu: Victim or Villain?',
+                        urlMidia: 'https://www.youtube.com/watch?v=exemplo2',
+                        descricaoPt: 'Debate sobre a construção da personagem feminina no romance.',
+                        descricaoEn:
+                            'Discussion on the construction of the female character in the novel.',
                     },
                 ],
             },
             curiosidades: {
                 create: [
                     {
-                        tituloPt: 'Manuscritos',
-                        tituloEn: 'Manuscripts',
-                        conteudoPt: 'Carolina escrevia em cadernos encontrados no lixo.',
-                        conteudoEn: 'Carolina wrote in notebooks found in the trash.',
+                        tituloPt: 'Título Enigmático',
+                        tituloEn: 'Enigmatic Title',
+                        conteudoPt:
+                            '"Casmurro" significa teimoso, calado. Bentinho ganha o apelido pela postura reservada na velhice.',
+                        conteudoEn:
+                            '"Casmurro" means stubborn, taciturn. Bentinho earns the nickname for his reserved demeanor in old age.',
+                    },
+                    {
+                        tituloPt: 'Olhos de Ressaca',
+                        tituloEn: 'Tide-like Eyes',
+                        conteudoPt:
+                            'A famosa metáfora "olhos de ressaca" para descrever Capitu é uma das mais estudadas da literatura brasileira.',
+                        conteudoEn:
+                            'The famous metaphor "tide-like eyes" to describe Capitu is one of the most studied in Brazilian literature.',
                     },
                 ],
             },
             dicasVestibular: {
                 create: [
                     {
-                        tituloPt: 'Foco na Variação Linguística',
-                        tituloEn: 'Focus on Linguistic Variation',
+                        tituloPt: 'Foco na Ironia',
+                        tituloEn: 'Focus on Irony',
                         conteudoPt:
-                            'Observe o uso da linguagem como forma de identidade e denúncia.',
+                            'Machado usa ironia fina. Questões frequentemente cobram interpretação de duplo sentido.',
                         conteudoEn:
-                            'Observe the use of language as a form of identity and denunciation.',
+                            'Machado uses subtle irony. Exam questions often test interpretation of double meanings.',
+                    },
+                    {
+                        tituloPt: 'Narrador em 1ª Pessoa',
+                        tituloEn: 'First-Person Narrator',
+                        conteudoPt:
+                            'Lembre-se: Bentinho narra os fatos anos depois, com subjetividade. A "verdade" é relativa.',
+                        conteudoEn:
+                            'Remember: Bentinho narrates events years later, with subjectivity. The "truth" is relative.',
                     },
                 ],
             },
             simulados: {
                 create: [
                     {
-                        tituloPt: 'Simulado Carolina Maria de Jesus',
-                        tituloEn: 'Carolina Maria de Jesus Quiz',
+                        tituloPt: 'Simulado Dom Casmurro - Vestibular',
+                        tituloEn: 'Dom Casmurro Quiz - College Entrance Exam',
                         questoes: {
                             create: [
                                 {
-                                    perguntaPt: 'Qual o papel da "Fome" na narrativa?',
-                                    perguntaEn: 'What is the role of "Hunger" in the narrative?',
-                                    respostaCorretaPt: 'Personagem antagonista',
-                                    respostaCorretaEn: 'Antagonist character',
+                                    perguntaPt:
+                                        'Qual recurso narrativo é central para a ambiguidade em Dom Casmurro?',
+                                    perguntaEn:
+                                        'Which narrative device is central to the ambiguity in Dom Casmurro?',
+                                    respostaCorretaPt: 'Narrador em primeira pessoa não confiável',
+                                    respostaCorretaEn: 'Unreliable first-person narrator',
                                     explicacaoPt:
-                                        'A fome é descrita quase como um ser vivo que persegue a autora.',
+                                        'Bentinho controla a narrativa, omitindo e distorcendo fatos, o que gera dúvida sobre a traição de Capitu.',
                                     explicacaoEn:
-                                        'Hunger is described almost as a living being that haunts the author.',
+                                        "Bentinho controls the narrative, omitting and distorting facts, which casts doubt on Capitu's alleged betrayal.",
                                     alternativas: {
                                         create: [
                                             {
-                                                textoPt: 'Personagem antagonista',
-                                                textoEn: 'Antagonist character',
+                                                textoPt:
+                                                    'Narrador em primeira pessoa não confiável',
+                                                textoEn: 'Unreliable first-person narrator',
                                             },
                                             {
-                                                textoPt: 'Apenas um detalhe',
-                                                textoEn: 'Just a detail',
+                                                textoPt: 'Narrador onisciente neutro',
+                                                textoEn: 'Neutral omniscient narrator',
                                             },
-                                            { textoPt: 'Um mito', textoEn: 'A myth' },
+                                            {
+                                                textoPt: 'Múltiplos narradores em terceira pessoa',
+                                                textoEn: 'Multiple third-person narrators',
+                                            },
+                                            {
+                                                textoPt: 'Diário íntimo com datas cronológicas',
+                                                textoEn: 'Intimate diary with chronological dates',
+                                            },
+                                        ],
+                                    },
+                                },
+                                {
+                                    perguntaPt:
+                                        'O que simboliza o "seminário" na formação de Bentinho?',
+                                    perguntaEn:
+                                        'What does the "seminary" symbolize in Bentinho\'s upbringing?',
+                                    respostaCorretaPt:
+                                        'Repressão e conflito entre vocação e desejo',
+                                    respostaCorretaEn:
+                                        'Repression and conflict between vocation and desire',
+                                    explicacaoPt:
+                                        'O seminário representa a imposição familiar e social que entra em choque com os desejos pessoais de Bentinho.',
+                                    explicacaoEn:
+                                        "The seminary represents family and social imposition that clashes with Bentinho's personal desires.",
+                                    alternativas: {
+                                        create: [
+                                            {
+                                                textoPt:
+                                                    'Repressão e conflito entre vocação e desejo',
+                                                textoEn:
+                                                    'Repression and conflict between vocation and desire',
+                                            },
+                                            {
+                                                textoPt: 'Liberdade intelectual e espiritual',
+                                                textoEn: 'Intellectual and spiritual freedom',
+                                            },
+                                            {
+                                                textoPt: 'Ambiente de amizade e aprendizado',
+                                                textoEn: 'Environment of friendship and learning',
+                                            },
+                                            {
+                                                textoPt: 'Preparação para liderança política',
+                                                textoEn: 'Preparation for political leadership',
+                                            },
                                         ],
                                     },
                                 },
@@ -129,16 +220,25 @@ async function main() {
         },
     });
 
+    // 👥 Equipe de Desenvolvimento
     await prisma.equipe.create({
         data: {
             nome: 'Equipe de Desenvolvimento',
-            curso: 'Tecnologia em Sistemas',
-            objetivoPt: 'Facilitar o estudo literário.',
-            objetivoEn: 'Facilitating literary study.',
+            curso: 'Tecnologia em Sistemas para Internet',
+            objetivoPt:
+                'Democratizar o acesso à análise literária de qualidade, unindo tecnologia e educação para preparar estudantes para vestibulares e ENEM.',
+            objetivoEn:
+                'Democratize access to quality literary analysis, combining technology and education to prepare students for college entrance exams.',
         },
     });
 
-    console.log('✅ Seed concluído!');
+    console.log('✅ Seed concluído com sucesso!');
+    console.log(`📚 Livro inserido: Dom Casmurro`);
+    console.log(`🎥 Videoaulas: 2`);
+    console.log(`💡 Curiosidades: 2`);
+    console.log(`🎯 Dicas Vestibular: 2`);
+    console.log(`❓ Questões no simulado: 2`);
+    console.log(`⭐ Reviews: 2`);
 }
 
 main()
@@ -149,4 +249,5 @@ main()
     .finally(async () => {
         await prisma.$disconnect();
         await pool.end();
+        console.log('🔌 Conexões encerradas.');
     });

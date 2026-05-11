@@ -290,6 +290,21 @@ export default class LivroModel {
     }
 
     async deletar() {
+        const simulados = await prisma.simulado.findMany({ where: { livroId: this.id } });
+        for (const s of simulados) {
+            const questoes = await prisma.questao.findMany({ where: { simuladoId: s.id } });
+            for (const q of questoes) {
+                await prisma.alternativa.deleteMany({ where: { questaoId: q.id } });
+            }
+            await prisma.questao.deleteMany({ where: { simuladoId: s.id } });
+        }
+
+        await prisma.simulado.deleteMany({ where: { livroId: this.id } });
+        await prisma.review.deleteMany({ where: { livroId: this.id } });
+        await prisma.videoaula.deleteMany({ where: { livroId: this.id } });
+        await prisma.curiosidade.deleteMany({ where: { livroId: this.id } });
+        await prisma.dicaVestibular.deleteMany({ where: { livroId: this.id } });
+
         return prisma.livro.delete({ where: { id: this.id } });
     }
 
