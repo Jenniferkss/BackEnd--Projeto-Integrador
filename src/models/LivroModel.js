@@ -16,6 +16,7 @@ export default class LivroModel {
         titulo,
         capaURl,
         capaUrl,
+        fotoAutor,
         autor,
         anoPublicacao,
         generoPT,
@@ -44,6 +45,7 @@ export default class LivroModel {
         this.tituloPT = tituloPT ?? tituloPt ?? titulo;
         this.tituloEN = tituloEN ?? tituloEn ?? titulo;
         this.capaURl = capaURl ?? capaUrl;
+        this.fotoAutor = fotoAutor;
         this.autor = autor;
         this.anoPublicacao = anoPublicacao;
         this.generoPT = generoPT ?? generoPt ?? genero;
@@ -142,6 +144,10 @@ export default class LivroModel {
 
         if (dados.capaURl !== undefined || dados.capaUrl !== undefined) {
             this.capaURl = dados.capaURl ?? dados.capaUrl;
+        }
+
+        if (dados.fotoAutor !== undefined) {
+            this.fotoAutor = dados.fotoAutor;
         }
 
         if (dados.autor !== undefined) {
@@ -250,6 +256,7 @@ export default class LivroModel {
                 tituloPT: this.tituloPT,
                 tituloEN: this.tituloEN,
                 capaURl: this.capaURl,
+                fotoAutor: this.fotoAutor,
                 autor: this.autor,
                 anoPublicacao: this.normalizarAnoPublicacao(),
                 generoPT: this.generoPT,
@@ -274,6 +281,7 @@ export default class LivroModel {
                 tituloPT: this.tituloPT,
                 tituloEN: this.tituloEN,
                 capaURl: this.capaURl,
+                fotoAutor: this.fotoAutor,
                 autor: this.autor,
                 anoPublicacao: this.normalizarAnoPublicacao(),
                 generoPT: this.generoPT,
