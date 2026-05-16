@@ -11,6 +11,7 @@ model Livro {
     tituloPT            String
     tituloEN            String
     capaURl             String?
+    fotoAutor           String?
     autor               String
     anoPublicacao       Int?
     generoPT            String

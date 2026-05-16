@@ -1,7 +1,7 @@
 {
   "name": "BackEnd--Projeto-Integrador",
   "version": "1.0.0",
-  "description": "",
+  "description": "Projeto Integrador - Backend",
   "main": "server.js",
   "type": "module",
   "private": true,
@@ -9,11 +9,10 @@
     "dev": "cls && nodemon src/server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "kaike,thales,jennifer",
   "license": "MIT",
   "dependencies": {
     "@prisma/adapter-pg": "^7.3.0",
-    "@prisma/client": "^7.3.0",
     "@supabase/supabase-js": "^2.104.1",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
@@ -23,7 +22,8 @@
     "sharp": "^0.34.5"
   },
   "devDependencies": {
+    "@prisma/client": "^7.8.0",
     "nodemon": "^3.1.14",
-    "prisma": "^7.3.0"
+    "prisma": "^7.8.0"
   }
 }
