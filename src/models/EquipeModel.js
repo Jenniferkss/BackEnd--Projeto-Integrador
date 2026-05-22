@@ -7,12 +7,13 @@ const erroValidacao = (status, message) => {
 };
 
 export default class EquipeModel {
-    constructor({ id = null, nome, curso, objetivoPt, objetivoEn } = {}) {
+    constructor({ id = null, nome, curso, objetivoPt, objetivoEn , fotoEquipe } = {}) {
         this.id = id;
         this.nome = nome;
         this.curso = curso;
         this.objetivoPt = objetivoPt;
         this.objetivoEn = objetivoEn;
+        this.fotoEquipe = fotoEquipe;
     }
 
     validarCampos() {
@@ -31,6 +32,9 @@ export default class EquipeModel {
         if (!this.objetivoEn) {
             throw erroValidacao(400, 'O campo "objetivoEn" é obrigatório para uma equipe!');
         }
+        if (!this.fotoEquipe) {
+            throw erroValidacao(400, 'O campo "fotoEquipe" é obrigatório para uma equipe!');
+        }
     }
 
     async criar() {
@@ -42,6 +46,7 @@ export default class EquipeModel {
                 curso: this.curso,
                 objetivoPt: this.objetivoPt,
                 objetivoEn: this.objetivoEn,
+                fotoEquipe: this.fotoEquipe,
             },
         });
     }
@@ -56,6 +61,7 @@ export default class EquipeModel {
                 curso: this.curso,
                 objetivoPt: this.objetivoPt,
                 objetivoEn: this.objetivoEn,
+                fotoEquipe: this.fotoEquipe,
             },
         });
     }

@@ -35,6 +35,7 @@ export const criar = async (req, res) => {
             curso,
             objetivoPt,
             objetivoEn,
+            fotoEquipe,
         });
 
         const data = await equipe.criar();
@@ -121,7 +122,9 @@ export const atualizar = async (req, res) => {
         if (req.body.objetivoEn !== undefined) {
             equipe.objetivoEn = req.body.objetivoEn;
         }
-
+        if (req.body.fotoEquipe !== undefined) {
+            equipe.fotoEquipe = req.body.fotoEquipe;
+        }
         const data = await equipe.atualizar();
 
         return res
