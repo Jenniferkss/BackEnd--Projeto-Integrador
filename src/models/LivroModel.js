@@ -30,6 +30,8 @@ export default class LivroModel {
         descricaoEn,
         descricao,
         personagens,
+        descricaoPersonagensPT,
+        descricaoPersonagensEN,
         contextoHistoricoPT,
         contextoHistoricoPt,
         contextoHistoricoEN,
@@ -59,7 +61,9 @@ export default class LivroModel {
                     .split(',')
                     .map((item) => item.trim())
                     .filter(Boolean)
-              : personagens;
+                : personagens;
+        this.descricaoPersonagensPT = descricaoPersonagensPT;
+        this.descricaoPersonagensEN = descricaoPersonagensEN;
         this.contextoHistoricoPT = contextoHistoricoPT ?? contextoHistoricoPt ?? contextoHistorico;
         this.contextoHistoricoEN = contextoHistoricoEN ?? contextoHistoricoEn ?? contextoHistorico;
         this.analisePT = analisePT ?? analisePt ?? analise;
@@ -114,13 +118,23 @@ export default class LivroModel {
         if (!this.analiseEN) {
             throw criarErro(400, 'O campo "analiseEN" é obrigatório para um livro!');
         }
+        if (!this.descricaoPersonagensPT) {
+            throw criarErro(400, 'O campo "descricaoPersonagensPT" é obrigatório para um personagem!');
+        }
+        if (!this.descricaoPersonagensEN) {
+            throw criarErro(
+                400,
+                'O campo "descricaoPersonagensEN" é obrigatório para um personagem!',
+            );
+        }
 
         if (
             this.anoPublicacao !== undefined &&
             this.anoPublicacao !== null &&
             this.anoPublicacao !== '' &&
             !Number.isInteger(Number(this.anoPublicacao))
-        ) {
+        )
+         {
             throw criarErro(400, 'O campo "anoPublicacao" deve ser um número válido!');
         }
     }
@@ -200,6 +214,12 @@ export default class LivroModel {
                         .filter(Boolean)
                   : dados.personagens;
         }
+        if (dados.descricaoPersonagensPT !== undefined) {
+            this.descricaoPersonagensPT = dados.descricaoPersonagensPT;
+        }
+        if (dados.descricaoPersonagensEN !== undefined) {
+            this.descricaoPersonagensEN = dados.descricaoPersonagensEN;
+        }
 
         if (
             dados.contextoHistoricoPT !== undefined ||
@@ -264,6 +284,8 @@ export default class LivroModel {
                 descricaoPT: this.descricaoPT,
                 descricaoEN: this.descricaoEN,
                 personagens: this.personagens,
+                descricaoPersonagensPT: this.descricaoPersonagensPT,
+                descricaoPersonagensEN: this.descricaoPersonagensEN,
                 contextoHistoricoPT: this.contextoHistoricoPT,
                 contextoHistoricoEN: this.contextoHistoricoEN,
                 analisePT: this.analisePT,
@@ -289,6 +311,8 @@ export default class LivroModel {
                 descricaoPT: this.descricaoPT,
                 descricaoEN: this.descricaoEN,
                 personagens: this.personagens,
+                descricaoPersonagensPT: this.descricaoPersonagensPT,
+                descricaoPersonagensEN: this.descricaoPersonagensEN,
                 contextoHistoricoPT: this.contextoHistoricoPT,
                 contextoHistoricoEN: this.contextoHistoricoEN,
                 analisePT: this.analisePT,
