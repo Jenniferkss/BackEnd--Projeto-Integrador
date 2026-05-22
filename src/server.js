@@ -49,10 +49,10 @@ app.get('/', (req, res) => {
 });
 
 // Rotas de fotos e arquivos
-app.use('/api/foto-equipe', fotoEquipeRoutes);
-app.use('/api/foto-livro', fotoLivroRoutes);
-app.use('/api/foto-autor', arquivoLivroRoutes);
-app.use('/api/arquivo-equipe', arquivoEquipeRoutes);
+app.use('/api/fotoEquipe', fotoEquipeRoutes);
+app.use('/api/fotoLivro', fotoLivroRoutes);
+app.use('/api/fotoAutor', arquivoLivroRoutes);
+app.use('/api/arquivoEquipe', arquivoEquipeRoutes);
 
 // Rotas principais
 app.use('/api/livro', livroRoutes);
@@ -60,7 +60,7 @@ app.use('/api/reviews', reviewsRoutes);
 app.use('/api/equipe', equipeRoutes);
 app.use('/api/videoaula', videoAulaRoutes);
 app.use('/api/curiosidade', curiosidadeRoutes);
-app.use('/api/dica-vestibular', dicaVestibularRoutes);
+app.use('/api/dicaVestibular', dicaVestibularRoutes);
 app.use('/api/simulado', simuladoRoutes);
 app.use('/api/questao', questaoRoutes);
 app.use('/api/alternativa', alternativaRoutes);

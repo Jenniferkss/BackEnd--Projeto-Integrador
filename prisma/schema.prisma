@@ -19,6 +19,8 @@ model Livro {
     descricaoPT         String           @db.Text
     descricaoEN         String           @db.Text
     personagens         String[]
+    descricaoPersonagensPT String        @db.Text
+    descricaoPersonagensEN String          @db.Text
     contextoHistoricoPT String           @db.Text
     contextoHistoricoEN String           @db.Text
     analisePT           String
