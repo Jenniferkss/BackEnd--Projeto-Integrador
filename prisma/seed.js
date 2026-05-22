@@ -1,4 +1,3 @@
-// seed.js
 import { PrismaPg } from '@prisma/adapter-pg';
 import pkg from '@prisma/client';
 import 'dotenv/config';
@@ -27,12 +26,13 @@ async function main() {
 
     console.log('📦 Inserindo novos registros...');
 
-    // 📚 Livro: Dom Casmurro
+    // 📚 Livro 1: Dom Casmurro
     await prisma.livro.create({
         data: {
             tituloPT: 'Dom Casmurro',
             tituloEN: 'Dom Casmurro',
             capaURl: 'https://exemplo.com/capa-dom-casmurro.jpg',
+            fotoAutor: 'https://exemplo.com/machado-de-assis.jpg',
             autor: 'Machado de Assis',
             anoPublicacao: 1899,
             generoPT: 'Romance, Realismo Brasileiro',
@@ -49,6 +49,10 @@ async function main() {
                 'Sancha',
                 'Escobar',
             ],
+            descricaoPersonagensPT:
+                'Bentinho é um homem inseguro e ciumento; Capitu possui olhos de ressaca e personalidade forte; Escobar é o amigo calculista e pragmático.',
+            descricaoPersonagensEN:
+                'Bentinho is an insecure and jealous man; Capitu has tide-like eyes and a strong personality; Escobar is the calculative and pragmatic friend.',
             contextoHistoricoPT:
                 'Brasil do século XIX, Rio de Janeiro imperial, ascensão da burguesia e influências do Realismo europeu.',
             contextoHistoricoEN:
@@ -86,14 +90,6 @@ async function main() {
                         descricaoPt: 'Análise da focalização narrativa e recursos de ambiguidade.',
                         descricaoEn: 'Analysis of narrative focalization and ambiguity devices.',
                     },
-                    {
-                        tituloPt: 'Capitu: Vítima ou Vilã?',
-                        tituloEn: 'Capitu: Victim or Villain?',
-                        urlMidia: 'https://www.youtube.com/watch?v=exemplo2',
-                        descricaoPt: 'Debate sobre a construção da personagem feminina no romance.',
-                        descricaoEn:
-                            'Discussion on the construction of the female character in the novel.',
-                    },
                 ],
             },
             curiosidades: {
@@ -106,26 +102,10 @@ async function main() {
                         conteudoEn:
                             '"Casmurro" means stubborn, taciturn. Bentinho earns the nickname for his reserved demeanor in old age.',
                     },
-                    {
-                        tituloPt: 'Olhos de Ressaca',
-                        tituloEn: 'Tide-like Eyes',
-                        conteudoPt:
-                            'A famosa metáfora "olhos de ressaca" para descrever Capitu é uma das mais estudadas da literatura brasileira.',
-                        conteudoEn:
-                            'The famous metaphor "tide-like eyes" to describe Capitu is one of the most studied in Brazilian literature.',
-                    },
                 ],
             },
             dicasVestibular: {
                 create: [
-                    {
-                        tituloPt: 'Foco na Ironia',
-                        tituloEn: 'Focus on Irony',
-                        conteudoPt:
-                            'Machado usa ironia fina. Questões frequentemente cobram interpretação de duplo sentido.',
-                        conteudoEn:
-                            'Machado uses subtle irony. Exam questions often test interpretation of double meanings.',
-                    },
                     {
                         tituloPt: 'Narrador em 1ª Pessoa',
                         tituloEn: 'First-Person Narrator',
@@ -176,38 +156,115 @@ async function main() {
                                         ],
                                     },
                                 },
+                            ],
+                        },
+                    },
+                ],
+            },
+        },
+    });
+
+    // 📚 Livro 2: Memórias Póstumas de Brás Cubas
+    await prisma.livro.create({
+        data: {
+            tituloPT: 'Memórias Póstumas de Brás Cubas',
+            tituloEN: 'The Posthumous Memoirs of Brás Cubas',
+            capaURl: 'https://exemplo.com/capa-bras-cubas.jpg',
+            fotoAutor: 'https://exemplo.com/machado-de-assis.jpg',
+            autor: 'Machado de Assis',
+            anoPublicacao: 1881,
+            generoPT: 'Romance, Realismo, Sátira',
+            generoEN: 'Novel, Realism, Satire',
+            descricaoPT:
+                'Um defunto-autor decide escrever sua autobiografia a partir do além, revisitando suas falhas, amores frustrados e o vazio de sua existência com extrema ironia.',
+            descricaoEN:
+                'A deceased author decides to write his autobiography from beyond the grave, revisiting his failures, frustrated loves, and the emptiness of his existence with extreme irony.',
+            personagens: ['Brás Cubas', 'Virgília', 'Marcela', 'Quincas Borba', 'Lobo Neves'],
+            descricaoPersonagensPT:
+                'Brás Cubas é o defunto-autor burguês e medíocre; Virgília é seu grande amor e amante; Quincas Borba é o filósofo louco criador do Humanitismo.',
+            descricaoPersonagensEN:
+                'Brás Cubas is the mediocre, bourgeois deceased author; Virgília is his great love and mistress; Quincas Borba is the mad philosopher who created Humanitidom.',
+            contextoHistoricoPT:
+                'Brasil do século XIX, transição econômica, sociedade escravocrata e hipocrisia das elites aristocráticas.',
+            contextoHistoricoEN:
+                '19th century Brazil, economic transition, slave-owning society, and the hypocrisy of aristocratic elites.',
+            analisePT:
+                'Inaugura o Realismo no Brasil. Destaca-se pelo uso de metalinguagem, pessimismo, ironia ácida e uma estrutura fragmentada totalmente inovadora para a época.',
+            analiseEN:
+                'Marks the beginning of Realism in Brazil. It stands out for its use of metalanguage, pessimism, sharp irony, and a fragmented structure completely innovative for its time.',
+            reviews: {
+                create: [
+                    {
+                        autor: 'Crítico Literário',
+                        comentarioPt:
+                            'Uma das maiores obras da literatura mundial. O conceito de defunto-autor é revolucionário.',
+                        comentarioEn:
+                            'One of the greatest works in world literature. The concept of a deceased author is revolutionary.',
+                        avaliacao: 5,
+                    },
+                ],
+            },
+            videoAulas: {
+                create: [
+                    {
+                        tituloPt: 'Introdução ao Realismo com Brás Cubas',
+                        tituloEn: 'Introduction to Realism with Brás Cubas',
+                        urlMidia: 'https://www.youtube.com/watch?v=exemplo3',
+                        descricaoPt: 'Análise de como Machado quebra as convenções românticas.',
+                        descricaoEn: 'Analysis of how Machado breaks romantic conventions.',
+                    },
+                ],
+            },
+            curiosidades: {
+                create: [
+                    {
+                        tituloPt: 'Defunto Autor vs. Autor Defunto',
+                        tituloEn: 'Deceased Author vs. Author Deceased',
+                        conteudoPt:
+                            'Brás Cubas deixa claro: ele não é um escritor que morreu, mas um homem que morreu e, no além, decidiu escrever.',
+                        conteudoEn:
+                            'Brás Cubas makes it clear: he is not a writer who died, but a man who died and, in the afterlife, decided to write.',
+                    },
+                ],
+            },
+            dicasVestibular: {
+                create: [
+                    {
+                        tituloPt: 'Volatilidade do Narrador',
+                        tituloEn: 'Narrator Volatility',
+                        conteudoPt:
+                            'Brás Cubas altera a ordem dos capítulos e conversa direto com o leitor. Fique atento às quebras de narrativa nas provas.',
+                        conteudoEn:
+                            'Brás Cubas alters chapter order and speaks directly to the reader. Watch out for narrative breaks in exams.',
+                    },
+                ],
+            },
+            simulados: {
+                create: [
+                    {
+                        tituloPt: 'Simulado Brás Cubas - Unicamp',
+                        tituloEn: 'Brás Cubas Quiz - Unicamp',
+                        questoes: {
+                            create: [
                                 {
                                     perguntaPt:
-                                        'O que simboliza o "seminário" na formação de Bentinho?',
+                                        'Como se chama a filosofia satírica criada por Quincas Borba no livro?',
                                     perguntaEn:
-                                        'What does the "seminary" symbolize in Bentinho\'s upbringing?',
-                                    respostaCorretaPt:
-                                        'Repressão e conflito entre vocação e desejo',
-                                    respostaCorretaEn:
-                                        'Repression and conflict between vocation and desire',
+                                        'What is the name of the satirical philosophy created by Quincas Borba in the book?',
+                                    respostaCorretaPt: 'Humanitismo',
+                                    respostaCorretaEn: 'Humanitidom',
                                     explicacaoPt:
-                                        'O seminário representa a imposição familiar e social que entra em choque com os desejos pessoais de Bentinho.',
+                                        'O Humanitismo é uma paródia das filosofias cientificistas do século XIX, resumida pela famosa frase: "Ao vencido, ódio ou compaixão; ao vencedor, as batatas".',
                                     explicacaoEn:
-                                        "The seminary represents family and social imposition that clashes with Bentinho's personal desires.",
+                                        'Humanitidom is a parody of 19th-century scientistic philosophies, summarized by the famous phrase: "To the victor, the potatoes".',
                                     alternativas: {
                                         create: [
+                                            { textoPt: 'Humanitismo', textoEn: 'Humanitidom' },
+                                            { textoPt: 'Positivismo', textoEn: 'Positivism' },
+                                            { textoPt: 'Determinismo', textoEn: 'Determinism' },
                                             {
-                                                textoPt:
-                                                    'Repressão e conflito entre vocação e desejo',
-                                                textoEn:
-                                                    'Repression and conflict between vocation and desire',
-                                            },
-                                            {
-                                                textoPt: 'Liberdade intelectual e espiritual',
-                                                textoEn: 'Intellectual and spiritual freedom',
-                                            },
-                                            {
-                                                textoPt: 'Ambiente de amizade e aprendizado',
-                                                textoEn: 'Environment of friendship and learning',
-                                            },
-                                            {
-                                                textoPt: 'Preparação para liderança política',
-                                                textoEn: 'Preparation for political leadership',
+                                                textoPt: 'Existencialismo',
+                                                textoEn: 'Existentialism',
                                             },
                                         ],
                                     },
@@ -229,16 +286,13 @@ async function main() {
                 'Democratizar o acesso à análise literária de qualidade, unindo tecnologia e educação para preparar estudantes para vestibulares e ENEM.',
             objetivoEn:
                 'Democratize access to quality literary analysis, combining technology and education to prepare students for college entrance exams.',
+            fotoEquipe: 'https://exemplo.com/foto-equipe.jpg',
         },
     });
 
     console.log('✅ Seed concluído com sucesso!');
-    console.log(`📚 Livro inserido: Dom Casmurro`);
-    console.log(`🎥 Videoaulas: 2`);
-    console.log(`💡 Curiosidades: 2`);
-    console.log(`🎯 Dicas Vestibular: 2`);
-    console.log(`❓ Questões no simulado: 2`);
-    console.log(`⭐ Reviews: 2`);
+    console.log(`📚 Livros inseridos: 2`);
+    console.log(`👥 Equipe inserida: 1`);
 }
 
 main()
