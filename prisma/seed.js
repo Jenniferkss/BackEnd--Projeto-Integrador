@@ -26,17 +26,17 @@ async function main() {
 
     console.log('📦 Inserindo novos registros...');
 
-    // 📚 Livro 1: Dom Casmurro
+
     await prisma.livro.create({
         data: {
-            tituloPT: 'Dom Casmurro',
-            tituloEN: 'Dom Casmurro',
-            capaURl: 'https://exemplo.com/capa-dom-casmurro.jpg',
-            fotoAutor: 'https://exemplo.com/machado-de-assis.jpg',
-            autor: 'Machado de Assis',
-            anoPublicacao: 1899,
-            generoPT: 'Romance, Realismo Brasileiro',
-            generoEN: 'Novel, Brazilian Realism',
+            tituloPT: 'quarto de despejo',
+            tituloEN: 'Child of the Dark',
+            capaURl: 'https://m.media-amazon.com/images/I/71z42zpEwbL.jpg',
+            fotoAutor: 'https://cdn.folhape.com.br/img/c/1200/900/dn_arquivo/2020/08/whatsapp-image-2020-07-17-at-145351.jpeg',
+            autor: 'Carolina Maria de Jesus',
+            anoPublicacao: 1960,
+            generoPT: 'Diário, Autobiografia, Literatura Testemunhal',
+            generoEN: ' Diary, Autobiography, Testimonial Literature',
             descricaoPT:
                 'Narrado por Bentinho, o romance explora ciúmes, memória e ambiguidade na relação com Capitu, questionando a confiabilidade do narrador.',
             descricaoEN:
