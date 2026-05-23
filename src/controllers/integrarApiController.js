@@ -6,7 +6,7 @@ const fontesBiblioteca = [
         urlCompleta:
             process.env.URL_LIVRO_CAPITAES_DA_AREIA ||
             'https://readflow-m8o6.onrender.com/api/livros',
-        apiKey: process.env.API_KEY_CAPITAES_DA_AREIA, // ← Padronize o prefixo
+        apiKey: process.env.API_KEY_CAPITAES_DA_AREIA, // ← Configure esta variável no Render (ex: READFLOW_API_KEY )
         requerApiKey: true,
         authType: 'header', // ← 'header' | 'bearer' | 'query'
         authHeaderName: 'x-api-key', // ← Nome do header quando authType === 'header'
@@ -17,7 +17,7 @@ const fontesBiblioteca = [
         nomeLivro: 'O Guarani',
         urlCompleta:
             process.env.URL_LIVRO_O_GUARANI || 'https://bookpedia-backend-4ab3.onrender.com/livros',
-        apiKey: process.env.API_KEY_O_GUARANI,
+        apiKey: process.env.API_KEY_O_GUARANI, // ← Configure esta variável no Render (ex: BOOKPEDIA_API_KEY )
         requerApiKey: true,
         authType: 'header',
         authHeaderName: 'x-api-key',
@@ -29,7 +29,7 @@ const fontesBiblioteca = [
         urlCompleta:
             process.env.URL_LIVRO_QUARTOS_DESPEJO ||
             'https://backend-projeto-integrador-rana.onrender.com/api/livro',
-        apiKey: process.env.API_KEY_QUARTOS_DESPEJO,
+        apiKey: 'amods', // API Key fornecida pelo usuário para o próprio livro
         requerApiKey: true,
         authType: 'header',
         authHeaderName: 'x-api-key',
@@ -39,7 +39,7 @@ const fontesBiblioteca = [
         id: 'memorias_bras_cubas',
         nomeLivro: 'Memórias Póstumas de Brás Cubas',
         urlCompleta: process.env.URL_LIVRO_MEMORIAS || 'https://projeto-clubyx.onrender.com/livros',
-        apiKey: process.env.API_KEY_MEMORIAS,
+        apiKey: process.env.API_KEY_MEMORIAS, // ← Configure esta variável no Render (ex: CLUBYX_API_KEY )
         requerApiKey: true,
         authType: 'header',
         authHeaderName: 'x-api-key',
@@ -88,7 +88,7 @@ const normalizarLivro = (item) => ({
     autor: obterPrimeiroValor(item, ['autor', 'author', 'nomeAutor'], 'Autor não informado'),
     capa_url: obterPrimeiroValor(
         item,
-        ['capa', 'image', 'cover', 'url_capa', 'imagem', 'foto'],
+        ['capaURl', 'capaUrl', 'capa', 'image', 'cover', 'url_capa', 'imagem', 'foto'], // Adicionado 'capaURl' e 'capaUrl'
         null,
     ),
     ano: obterPrimeiroValor(item, ['ano', 'year', 'ano_publicacao'], 'N/A'),
