@@ -127,7 +127,7 @@ model Equipe {
     curso      String
     objetivoPt String @db.Text
     objetivoEn String @db.Text
-    fotoEquipe String?
+    fotoEquipe String[]
 
     @@map("equipes")
 }
