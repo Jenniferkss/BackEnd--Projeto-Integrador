@@ -6,6 +6,21 @@ const criarErro = (status, message) => {
     return error;
 };
 
+const normalizarLista = (valor) => {
+    if (Array.isArray(valor)) {
+        return valor;
+    }
+
+    if (typeof valor === 'string') {
+        return valor
+            .split(',')
+            .map((item) => item.trim())
+            .filter(Boolean);
+    }
+
+    return valor;
+};
+
 export default class LivroModel {
     constructor({
         id = null,
@@ -30,6 +45,8 @@ export default class LivroModel {
         descricaoEn,
         descricao,
         personagens,
+        fotoPersonagens,
+        fotosCuriosidades,
         descricaoPersonagensPT,
         descricaoPersonagensEN,
         contextoHistoricoPT,
@@ -54,14 +71,9 @@ export default class LivroModel {
         this.generoEN = generoEN ?? generoEn ?? genero;
         this.descricaoPT = descricaoPT ?? descricaoPt ?? descricao;
         this.descricaoEN = descricaoEN ?? descricaoEn ?? descricao;
-        this.personagens = Array.isArray(personagens)
-            ? personagens
-            : typeof personagens === 'string'
-              ? personagens
-                    .split(',')
-                    .map((item) => item.trim())
-                    .filter(Boolean)
-                : personagens;
+        this.personagens = normalizarLista(personagens);
+        this.fotoPersonagens = normalizarLista(fotoPersonagens);
+        this.fotosCuriosidades = normalizarLista(fotosCuriosidades);
         this.descricaoPersonagensPT = descricaoPersonagensPT;
         this.descricaoPersonagensEN = descricaoPersonagensEN;
         this.contextoHistoricoPT = contextoHistoricoPT ?? contextoHistoricoPt ?? contextoHistorico;
@@ -103,6 +115,14 @@ export default class LivroModel {
             throw criarErro(400, 'O campo "personagens" é obrigatório para um livro!');
         }
 
+        if (!Array.isArray(this.fotoPersonagens) || this.fotoPersonagens.length === 0) {
+            throw criarErro(400, 'O campo "fotoPersonagens" é obrigatório para um livro!');
+        }
+
+        if (!Array.isArray(this.fotosCuriosidades) || this.fotosCuriosidades.length === 0) {
+            throw criarErro(400, 'O campo "fotosCuriosidades" é obrigatório para um livro!');
+        }
+
         if (!this.contextoHistoricoPT) {
             throw criarErro(400, 'O campo "contextoHistoricoPT" é obrigatório para um livro!');
         }
@@ -119,12 +139,15 @@ export default class LivroModel {
             throw criarErro(400, 'O campo "analiseEN" é obrigatório para um livro!');
         }
         if (!this.descricaoPersonagensPT) {
-            throw criarErro(400, 'O campo "descricaoPersonagensPT" é obrigatório para um personagem!');
+            throw criarErro(
+                400,
+                'O campo "descricaoPersonagensPT" é obrigatório para um personagem!'
+            );
         }
         if (!this.descricaoPersonagensEN) {
             throw criarErro(
                 400,
-                'O campo "descricaoPersonagensEN" é obrigatório para um personagem!',
+                'O campo "descricaoPersonagensEN" é obrigatório para um personagem!'
             );
         }
 
@@ -133,8 +156,7 @@ export default class LivroModel {
             this.anoPublicacao !== null &&
             this.anoPublicacao !== '' &&
             !Number.isInteger(Number(this.anoPublicacao))
-        )
-         {
+        ) {
             throw criarErro(400, 'O campo "anoPublicacao" deve ser um número válido!');
         }
     }
@@ -205,14 +227,13 @@ export default class LivroModel {
         }
 
         if (dados.personagens !== undefined) {
-            this.personagens = Array.isArray(dados.personagens)
-                ? dados.personagens
-                : typeof dados.personagens === 'string'
-                  ? dados.personagens
-                        .split(',')
-                        .map((item) => item.trim())
-                        .filter(Boolean)
-                  : dados.personagens;
+            this.personagens = normalizarLista(dados.personagens);
+        }
+        if (dados.fotoPersonagens !== undefined) {
+            this.fotoPersonagens = normalizarLista(dados.fotoPersonagens);
+        }
+        if (dados.fotosCuriosidades !== undefined) {
+            this.fotosCuriosidades = normalizarLista(dados.fotosCuriosidades);
         }
         if (dados.descricaoPersonagensPT !== undefined) {
             this.descricaoPersonagensPT = dados.descricaoPersonagensPT;
@@ -284,6 +305,8 @@ export default class LivroModel {
                 descricaoPT: this.descricaoPT,
                 descricaoEN: this.descricaoEN,
                 personagens: this.personagens,
+                fotoPersonagens: this.fotoPersonagens,
+                fotosCuriosidades: this.fotosCuriosidades,
                 descricaoPersonagensPT: this.descricaoPersonagensPT,
                 descricaoPersonagensEN: this.descricaoPersonagensEN,
                 contextoHistoricoPT: this.contextoHistoricoPT,
@@ -311,6 +334,8 @@ export default class LivroModel {
                 descricaoPT: this.descricaoPT,
                 descricaoEN: this.descricaoEN,
                 personagens: this.personagens,
+                fotoPersonagens: this.fotoPersonagens,
+                fotosCuriosidades: this.fotosCuriosidades,
                 descricaoPersonagensPT: this.descricaoPersonagensPT,
                 descricaoPersonagensEN: this.descricaoPersonagensEN,
                 contextoHistoricoPT: this.contextoHistoricoPT,
