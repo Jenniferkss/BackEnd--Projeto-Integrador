@@ -5,37 +5,32 @@ const fontesBiblioteca = [
     {
         id: 'capitaes_arena',
         nomeLivro: 'Capitães da Areia',
-        urlCompleta:
-            process.env.URL_LIVRO_CAPITAES_DA_AREIA ||
-            'https://readflow-m8o6.onrender.com/api/livros',
+        urlCompleta: process.env.URL_LIVRO_CAPITAES_DA_AREIA || 'https://readflow-m8o6.onrender.com/api/livros',
         apiKey: process.env.API_KEY_CAPITAES_DA_AREIA,
         requerApiKey: true,
         authType: 'header',
         authHeaderName: 'x-api-key',
-        timeoutMs: 12000,
+        timeoutMs: 1000,
     },
     {
         id: 'o_guarani',
         nomeLivro: 'O Guarani',
-        urlCompleta:
-            process.env.URL_LIVRO_O_GUARANI || 'https://bookpedia-backend-4ab3.onrender.com/livros',
+        urlCompleta: process.env.URL_LIVRO_O_GUARANI || 'https://bookpedia-backend-4ab3.onrender.com/livros',
         apiKey: process.env.API_KEY_O_GUARANI,
         requerApiKey: true,
         authType: 'header',
         authHeaderName: 'x-api-key',
-        timeoutMs: 12000,
+        timeoutMs: 1000,
     },
     {
         id: 'quartos_despejo',
         nomeLivro: 'Quarto de Despejo',
-        urlCompleta:
-            process.env.URL_LIVRO_QUARTOS_DESPEJO ||
-            'https://backend-projeto-integrador-rana.onrender.com/api/livro',
+        urlCompleta: process.env.URL_LIVRO_QUARTOS_DESPEJO || 'https://backend-projeto-integrador-rana.onrender.com/api/livro',
         apiKey: process.env.API_KEY_QUARTOS_DESPEJO || 'amods', // usa env se existir, senão fallback 'amods'
         requerApiKey: true,
         authType: 'header',
         authHeaderName: 'x-api-key',
-        timeoutMs: 12000,
+        timeoutMs: 1000,
     },
     {
         id: 'memorias_bras_cubas',
@@ -45,7 +40,7 @@ const fontesBiblioteca = [
         requerApiKey: true,
         authType: 'header',
         authHeaderName: 'x-api-key',
-        timeoutMs: 12000,
+        timeoutMs: 1000,
     },
 ];
 
@@ -88,17 +83,7 @@ const normalizarLivro = (item) => ({
     ...item,
     titulo: obterPrimeiroValor(
         item,
-        [
-            'tituloPT',
-            'tituloPt',
-            'titulo_pt',
-            'titulo',
-            'title',
-            'nome',
-            'nomeLivro',
-            'obraPt',
-            'obraPT',
-        ],
+        ['tituloPT', 'tituloPt', 'titulo_pt', 'titulo', 'title', 'nome', 'nomeLivro', 'obraPt', 'obraPT'],
         'Título não informado'
     ),
     titulo_pt: obterPrimeiroValor(item, ['tituloPT', 'tituloPt', 'titulo_pt', 'titulo'], ''),
@@ -124,11 +109,7 @@ const normalizarLivro = (item) => ({
         null
     ),
     ano: obterPrimeiroValor(item, ['ano', 'year', 'ano_publicacao'], 'N/A'),
-    anoPublicacao: obterPrimeiroValor(
-        item,
-        ['anoPublicacao', 'ano', 'year', 'ano_publicacao'],
-        'N/A'
-    ),
+    anoPublicacao: obterPrimeiroValor(item, ['anoPublicacao', 'ano', 'year', 'ano_publicacao'], 'N/A'),
     genero_pt: obterPrimeiroValor(
         item,
         ['generoPT', 'generoPt', 'genero_pt', 'genero', 'genre_pt', 'categoria', 'category'],
@@ -144,89 +125,32 @@ const normalizarLivro = (item) => ({
         ['generoPT', 'generoPt', 'genero_pt', 'genero', 'genre_pt', 'categoria', 'category'],
         'Gênero não informado'
     ),
-    genero_en: obterPrimeiroValor(
-        item,
-        ['generoEN', 'generoEn', 'genero_en', 'genre', 'category_en'],
-        'Genre not informed'
-    ),
-    generoEn: obterPrimeiroValor(
-        item,
-        ['generoEN', 'generoEn', 'genero_en', 'genre', 'category_en'],
-        'Genre not informed'
-    ),
-    generoEN: obterPrimeiroValor(
-        item,
-        ['generoEN', 'generoEn', 'genero_en', 'genre', 'category_en'],
-        'Genre not informed'
-    ),
+    genero_en: obterPrimeiroValor(item, ['generoEN', 'generoEn', 'genero_en', 'genre', 'category_en'], 'Genre not informed'),
+    generoEn: obterPrimeiroValor(item, ['generoEN', 'generoEn', 'genero_en', 'genre', 'category_en'], 'Genre not informed'),
+    generoEN: obterPrimeiroValor(item, ['generoEN', 'generoEn', 'genero_en', 'genre', 'category_en'], 'Genre not informed'),
     enredo_pt: obterPrimeiroValor(
         item,
-        [
-            'descricaoPT',
-            'descricaoPt',
-            'descricao_pt',
-            'enredo_pt',
-            'resumo',
-            'sinopse',
-            'summary',
-            'description_pt',
-        ],
+        ['descricaoPT', 'descricaoPt', 'descricao_pt', 'enredo_pt', 'resumo', 'sinopse', 'summary', 'description_pt'],
         'Enredo não informado'
     ),
     enredoPt: obterPrimeiroValor(
         item,
-        [
-            'descricaoPT',
-            'descricaoPt',
-            'descricao_pt',
-            'enredo_pt',
-            'resumo',
-            'sinopse',
-            'summary',
-            'description_pt',
-        ],
+        ['descricaoPT', 'descricaoPt', 'descricao_pt', 'enredo_pt', 'resumo', 'sinopse', 'summary', 'description_pt'],
         'Enredo não informado'
     ),
     descricaoPT: obterPrimeiroValor(
         item,
-        [
-            'descricaoPT',
-            'descricaoPt',
-            'descricao_pt',
-            'enredo_pt',
-            'resumo',
-            'sinopse',
-            'summary',
-            'description_pt',
-        ],
+        ['descricaoPT', 'descricaoPt', 'descricao_pt', 'enredo_pt', 'resumo', 'sinopse', 'summary', 'description_pt'],
         'Enredo não informado'
     ),
     descricaoPt: obterPrimeiroValor(
         item,
-        [
-            'descricaoPT',
-            'descricaoPt',
-            'descricao_pt',
-            'enredo_pt',
-            'resumo',
-            'sinopse',
-            'summary',
-            'description_pt',
-        ],
+        ['descricaoPT', 'descricaoPt', 'descricao_pt', 'enredo_pt', 'resumo', 'sinopse', 'summary', 'description_pt'],
         'Enredo não informado'
     ),
     descricao: obterPrimeiroValor(
         item,
-        [
-            'descricaoPT',
-            'descricaoPt',
-            'descricao_pt',
-            'enredo_pt',
-            'resumo',
-            'sinopse',
-            'summary',
-            'description_pt',
-        ],
+        ['descricaoPT', 'descricaoPt', 'descricao_pt', 'enredo_pt', 'resumo', 'sinopse', 'summary', 'description_pt'],
         'Enredo não informado'
     ),
     enredo_en: obterPrimeiroValor(
@@ -249,64 +173,21 @@ const normalizarLivro = (item) => ({
         ['descricaoEN', 'descricaoEn', 'descricao_en', 'enredo_en', 'description', 'summary_en'],
         'Description not informed'
     ),
-    fotoAutor: obterPrimeiroValor(
-        item,
-        [
-            'fotoAutor',
-            'fotoAutorUrl',
-            'fotoAutorURL',
-            'foto_autor',
-            'foto_autor_url',
-            'authorPhoto',
-            'authorPhotoUrl',
-            'foto',
-        ],
-        null
-    ),
+    fotoAutor: obterPrimeiroValor(item, ['fotoAutor', 'foto_autor', 'authorPhoto', 'foto'], null),
     fotoPersonagens: normalizarLista(
         obterPrimeiroValor(item, ['fotoPersonagens', 'foto_personagens', 'fotosPersonagens'], [])
     ),
     fotosCuriosidades: normalizarLista(
-        obterPrimeiroValor(
-            item,
-            ['fotosCuriosidades', 'fotos_curiosidades', 'fotosCuriosidade'],
-            []
-        )
+        obterPrimeiroValor(item, ['fotosCuriosidades', 'fotos_curiosidades', 'fotosCuriosidade'], [])
     ),
-    fotoAutorUrl: obterPrimeiroValor(
-        item,
-        [
-            'fotoAutor',
-            'fotoAutorUrl',
-            'fotoAutorURL',
-            'foto_autor',
-            'foto_autor_url',
-            'authorPhoto',
-            'authorPhotoUrl',
-            'foto',
-        ],
-        null
-    ),
-    fotoAutorURL: obterPrimeiroValor(
-        item,
-        [
-            'fotoAutor',
-            'fotoAutorUrl',
-            'fotoAutorURL',
-            'foto_autor',
-            'foto_autor_url',
-            'authorPhoto',
-            'authorPhotoUrl',
-            'foto',
-        ],
-        null
-    ),
+    fotoAutorUrl: obterPrimeiroValor(item, ['fotoAutor', 'foto_autor', 'authorPhoto', 'foto'], null),
+    fotoAutorURL: obterPrimeiroValor(item, ['fotoAutor', 'foto_autor', 'authorPhoto', 'foto'], null),
 });
 
 const montarCabecalhos = (fonte) => {
     const headers = {
         'Content-Type': 'application/json',
-        Accept: 'application/json',
+        'Accept': 'application/json',
     };
 
     if (!fonte.requerApiKey || !fonte.apiKey) return headers;
