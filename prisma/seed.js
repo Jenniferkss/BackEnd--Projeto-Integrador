@@ -46,7 +46,7 @@ async function main() {
 
     await prisma.livro.create({
         data: {
-            tituloPT: 'quarto de despejo',
+            tituloPT: 'Quarto de despejo',
             tituloEN: 'Child of the Dark',
             capaURl: capaLivro,
             fotoAutor,
