@@ -1,12 +1,24 @@
 import { PrismaPg } from '@prisma/adapter-pg';
 import pkg from '@prisma/client';
 import 'dotenv/config';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 import pg from 'pg';
 
 const { PrismaClient } = pkg;
 const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
+
+const imagemParaDataUrl = async (arquivo) => {
+    const caminho = path.resolve(process.cwd(), 'fotos', arquivo);
+    const extensao = path.extname(arquivo).toLowerCase();
+    const mimeType =
+        extensao === '.png' ? 'image/png' : extensao === '.webp' ? 'image/webp' : 'image/jpeg';
+
+    const buffer = await fs.readFile(caminho);
+    return `data:${mimeType};base64,${buffer.toString('base64')}`;
+};
 
 async function limparDados() {
     await prisma.alternativa.deleteMany();
@@ -26,13 +38,18 @@ async function main() {
 
     console.log('📦 Inserindo novos registros...');
 
+    const capaLivro = await imagemParaDataUrl('Capitaes da areia.jpg');
+    const fotoAutor = await imagemParaDataUrl('memorias postumas de bras cubas.jpg');
+    const fotoPersonagem1 = await imagemParaDataUrl('O guarani.jpg');
+    const fotoPersonagem2 = await imagemParaDataUrl('olhosDagua.jpg');
+    const fotoCuriosidade = await imagemParaDataUrl('vidas secas.jpg');
 
     await prisma.livro.create({
         data: {
             tituloPT: 'quarto de despejo',
             tituloEN: 'Child of the Dark',
-            capaURl: 'https://m.media-amazon.com/images/I/71z42zpEwbL.jpg',
-            fotoAutor: 'https://cdn.folhape.com.br/img/c/1200/900/dn_arquivo/2020/08/whatsapp-image-2020-07-17-at-145351.jpeg',
+            capaURl: capaLivro,
+            fotoAutor,
             autor: 'Carolina Maria de Jesus',
             anoPublicacao: 1960,
             generoPT: 'Diário, Autobiografia, Literatura Testemunhal',
@@ -49,6 +66,8 @@ async function main() {
                 'Sancha',
                 'Escobar',
             ],
+            fotoPersonagens: [fotoPersonagem1, fotoPersonagem2],
+            fotosCuriosidades: [fotoCuriosidade],
             descricaoPersonagensPT:
                 'Bentinho é um homem inseguro e ciumento; Capitu possui olhos de ressaca e personalidade forte; Escobar é o amigo calculista e pragmático.',
             descricaoPersonagensEN:
@@ -164,119 +183,6 @@ async function main() {
         },
     });
 
-    // 📚 Livro 2: Memórias Póstumas de Brás Cubas
-    await prisma.livro.create({
-        data: {
-            tituloPT: 'Memórias Póstumas de Brás Cubas',
-            tituloEN: 'The Posthumous Memoirs of Brás Cubas',
-            capaURl: 'https://exemplo.com/capa-bras-cubas.jpg',
-            fotoAutor: 'https://exemplo.com/machado-de-assis.jpg',
-            autor: 'Machado de Assis',
-            anoPublicacao: 1881,
-            generoPT: 'Romance, Realismo, Sátira',
-            generoEN: 'Novel, Realism, Satire',
-            descricaoPT:
-                'Um defunto-autor decide escrever sua autobiografia a partir do além, revisitando suas falhas, amores frustrados e o vazio de sua existência com extrema ironia.',
-            descricaoEN:
-                'A deceased author decides to write his autobiography from beyond the grave, revisiting his failures, frustrated loves, and the emptiness of his existence with extreme irony.',
-            personagens: ['Brás Cubas', 'Virgília', 'Marcela', 'Quincas Borba', 'Lobo Neves'],
-            descricaoPersonagensPT:
-                'Brás Cubas é o defunto-autor burguês e medíocre; Virgília é seu grande amor e amante; Quincas Borba é o filósofo louco criador do Humanitismo.',
-            descricaoPersonagensEN:
-                'Brás Cubas is the mediocre, bourgeois deceased author; Virgília is his great love and mistress; Quincas Borba is the mad philosopher who created Humanitidom.',
-            contextoHistoricoPT:
-                'Brasil do século XIX, transição econômica, sociedade escravocrata e hipocrisia das elites aristocráticas.',
-            contextoHistoricoEN:
-                '19th century Brazil, economic transition, slave-owning society, and the hypocrisy of aristocratic elites.',
-            analisePT:
-                'Inaugura o Realismo no Brasil. Destaca-se pelo uso de metalinguagem, pessimismo, ironia ácida e uma estrutura fragmentada totalmente inovadora para a época.',
-            analiseEN:
-                'Marks the beginning of Realism in Brazil. It stands out for its use of metalanguage, pessimism, sharp irony, and a fragmented structure completely innovative for its time.',
-            reviews: {
-                create: [
-                    {
-                        autor: 'Crítico Literário',
-                        comentarioPt:
-                            'Uma das maiores obras da literatura mundial. O conceito de defunto-autor é revolucionário.',
-                        comentarioEn:
-                            'One of the greatest works in world literature. The concept of a deceased author is revolutionary.',
-                        avaliacao: 5,
-                    },
-                ],
-            },
-            videoAulas: {
-                create: [
-                    {
-                        tituloPt: 'Introdução ao Realismo com Brás Cubas',
-                        tituloEn: 'Introduction to Realism with Brás Cubas',
-                        urlMidia: 'https://www.youtube.com/watch?v=exemplo3',
-                        descricaoPt: 'Análise de como Machado quebra as convenções românticas.',
-                        descricaoEn: 'Analysis of how Machado breaks romantic conventions.',
-                    },
-                ],
-            },
-            curiosidades: {
-                create: [
-                    {
-                        tituloPt: 'Defunto Autor vs. Autor Defunto',
-                        tituloEn: 'Deceased Author vs. Author Deceased',
-                        conteudoPt:
-                            'Brás Cubas deixa claro: ele não é um escritor que morreu, mas um homem que morreu e, no além, decidiu escrever.',
-                        conteudoEn:
-                            'Brás Cubas makes it clear: he is not a writer who died, but a man who died and, in the afterlife, decided to write.',
-                    },
-                ],
-            },
-            dicasVestibular: {
-                create: [
-                    {
-                        tituloPt: 'Volatilidade do Narrador',
-                        tituloEn: 'Narrator Volatility',
-                        conteudoPt:
-                            'Brás Cubas altera a ordem dos capítulos e conversa direto com o leitor. Fique atento às quebras de narrativa nas provas.',
-                        conteudoEn:
-                            'Brás Cubas alters chapter order and speaks directly to the reader. Watch out for narrative breaks in exams.',
-                    },
-                ],
-            },
-            simulados: {
-                create: [
-                    {
-                        tituloPt: 'Simulado Brás Cubas - Unicamp',
-                        tituloEn: 'Brás Cubas Quiz - Unicamp',
-                        questoes: {
-                            create: [
-                                {
-                                    perguntaPt:
-                                        'Como se chama a filosofia satírica criada por Quincas Borba no livro?',
-                                    perguntaEn:
-                                        'What is the name of the satirical philosophy created by Quincas Borba in the book?',
-                                    respostaCorretaPt: 'Humanitismo',
-                                    respostaCorretaEn: 'Humanitidom',
-                                    explicacaoPt:
-                                        'O Humanitismo é uma paródia das filosofias cientificistas do século XIX, resumida pela famosa frase: "Ao vencido, ódio ou compaixão; ao vencedor, as batatas".',
-                                    explicacaoEn:
-                                        'Humanitidom is a parody of 19th-century scientistic philosophies, summarized by the famous phrase: "To the victor, the potatoes".',
-                                    alternativas: {
-                                        create: [
-                                            { textoPt: 'Humanitismo', textoEn: 'Humanitidom' },
-                                            { textoPt: 'Positivismo', textoEn: 'Positivism' },
-                                            { textoPt: 'Determinismo', textoEn: 'Determinism' },
-                                            {
-                                                textoPt: 'Existencialismo',
-                                                textoEn: 'Existentialism',
-                                            },
-                                        ],
-                                    },
-                                },
-                            ],
-                        },
-                    },
-                ],
-            },
-        },
-    });
-
     // 👥 Equipe de Desenvolvimento
     await prisma.equipe.create({
         data: {
@@ -287,22 +193,22 @@ async function main() {
             objetivoEn:
                 'Democratize access to quality literary analysis, combining technology and education to prepare students for college entrance exams.',
             fotoEquipe: [
-                "https://lh3.googleusercontent.com/chat_attachment/AP1Ws4tbcK-lYuDQM5fe7XyCB_x0ckDtrcSwuzQUo4W9Dawuky_7xhyH-rIWkj_LbHqERPoxxR5CugiaWa6uxsNd0Akkxyi1nQ73TXElBP8ttC8mnf8MopLd42ZtZeTyaruJU37D5yXOeaWDYxKxeJjngba0uy2Zakiclchxk-5IXK9KSEgV3rvcmywTUOADdYyiLLwnallVorIhvh8VyA3k7yk1qB88P_IYj84MiSqnifMh0MXQePYcyG-JYP3IdY24S0R7GMi2mRpyI458pv3kfaKaAGPnjX9qmHEu-HPDEJZM0WCrQdCiVwjLzRggXlUb6RQ=w1872-h970-rw",
-                "https://lh3.googleusercontent.com/chat_attachment/AP1Ws4toZBe53Xs0nmNJjBgDQdsghaYyrj9psCLJGFXvYNQNOStMPLpOLIzT6LezH-a6sbUNF-5DAvZPwjQRji5xiZeaHPaHJsT_VOhl-cKeesEfYQpjwNy8XlUAM4BoMwzQcEJmllzMRZEONgOtChEM7eJovWV5LffFEwTdle_VEdN83L8k5T79P8jFXC4OxP5g-uKcc0uJiVPVLG4iUADuslmqaS4HbJRpsYH_bXAUeQAKgDyrPCWB0n1A-reCkMvbEGiaiFmoJj7tgU5X9xblvmPF38yIKI72E4dc8PhRqHiQQPDmmHEZlBq0dtmeck8c00Y=w1872-h970-rw",
-                "https://lh3.googleusercontent.com/chat_attachment/AP1Ws4tEjzH2oWm0cl1n5CEXr_6uL_FB-sihgiMiCpMjHLncYuLpW5QlsNz-5_cLiZ9FCsO32e3zlXrzh0verJ6-VOV2nbnhJVnBJ3zVBaRF5FpTYrKnpA1V7-1MtyV_EhhOhehnk09mkZOSDHJWLrUXqLpd9GixVb4PZ8bXjWL5ebgQMAOOBGPwyCTOnXgNtLKhk1JCWY5Ob96F1Qpq_d4nSFL5WFOK-78VZ4a1EYn0wytsyZcntzmwZcveu3wWi-uTdTpaeghxRTEKwtAt-7F7rpbQSWrvwrV-3fozh9JHFSOMYWhV-xakDFrB2N6UPme20eg=w1872-h970-rw",
-                "https://lh3.googleusercontent.com/chat_attachment/AP1Ws4stBs0Dur8uK2GeRMMCDIicjZBdI8w0lZ2WUfnLl9hu7l4d9R9bj7MQVDAEEvBGXB2Pvc7GdyNBhGX_29kWsHMjoyp6UOWXkE8GWJqrOEkgNzjI4Qvj7RVZOEiweQhDMv8dwsrGDRmcCjm7vva7ZklJXFHCYFKcKYSPqf1-C0kvbBn2tfWjhJFCuhuChQO2jUFn6b8vGIXe7EtohPKfuIm5r69bcDzLz1ck3-fDot1YJJ8CtphfuUEaG2_EPU42vtnmT5iaIvrFz3rbZVzi2Q9lsl_2zw6caL7rQzIE-k9PuwiTgt-qPx-0lNQVXtqkkAg=w1872-h970-rw",
-                "https://lh3.googleusercontent.com/chat_attachment/AP1Ws4vDyGdae2MmUhjzuIFa-I_7ATgLjE1nLIDHdY6tVLxYOJFr1nTYYNNI8mTLH4vriImKUH88NrU1nXv3skwAjQ0Hf1Mpj-LSj9jX4ydn9ftmpzSwaXo5hEOazsBCGg7sOqEt8jGTcN7aFPtmnvDt1BoTAJ-xa4cQ33HaPIGeKAHO1TV52IxooxI8FK8EMTWOI4npaav3BX9tLh1-tF2Mr1-IHyp1M4H4ejUqt96YCAR5Hd1GgixrLX3DmhgbxZJ-7Fcvb93KhICoG_EZcMjlMyZWXlpqcCbGzv-DnMGEL9052jtHgKurvvvYL02j7dzVQHo=w1872-h970-rw",
-                "https://lh3.googleusercontent.com/chat_attachment/AP1Ws4uxD8yzh3lnuOBfg8VsWHDv-aXVcjgk4n_74G3EBeqXSGvlKjcOey9jVq6TCqHwcy9-wfqWfW6cahnZd0DNLrC0YVUhhe-KsXt5rJpDdUU_ATxDx0kWCcjZbSpwEY-9BHYhWzeZzQ4eivzvQcjyUES23gNVAWMybQQMVcnTf0_mtgVuTmS6zRQ9zcc3A6YkqG6H6zKDt7ie_ktR-W_wOQDEOzr6yvz4FvPEuVJ-n1x7u-UrN5hKXoTzg1PFUs8PFLbaj7h53-iwgDApBHlRG7TbLOxzDG650PNUxPkfM7DanzAnzvyAEsXd_9XZRfxh8hs=w1872-h970-rw",
-                "https://lh3.googleusercontent.com/chat_attachment/AP1Ws4see_tqRt8m5sY2abBS1FtqMOOdDyuoVJgWxvs9zx-iIAgOHMQm21r6zNSeY3sBShXfFlT-ZA56wFlVkdc6-WEo3i1PBxRPlRLzc794l-c1AxwyE60p47PdCtN-kGHwbVKY4bHY4sajJ2gTdBBe53iXwe10L6HjFCAZmJhPtU8IpwLaQFQQ9_ZwduA0tLDGOPFSmXGFF_f_vNcit-6ZXZkaWKeqBNlAbTehW-zT5ANlcZd_HFX3aEP_PnEeFoCOpCMkKnhOeL5yXGTfVeohv7Si-Inuc8Rh6QuKWXl_Sf258N4ZulAqf6QSIZfOoHbc8wY=w1872-h970-rw",
-                "https://lh3.googleusercontent.com/chat_attachment/AP1Ws4uzrBq3E0jy4GlbWqbelWoNnEpAlvhicEaPQP73HPpmHPZ_zEB3GMeCBNJIu_dV207wNWEJmBhsJ4bjV9cWwY6WL85IJTdmKlQ9srr9wvDwYFJDNs6A69bR93LQ-08I_rMu6HiKCSRwcPx5mD01eLjgz-_VAQkrcO56qjzmYtQM2v_JBoooUuwFSy0Civa6rqSb9WkFLpRkzkHdGxnRTpBvRnKajxRsXtKhHK0fCO2Qy5yJIJfyntxQinWCiN_haFBwcehL-nT-NIjee2N08PIevTUJZDP6LpdMD8cNM2TR9_p9YXbhmtloXI0ADp2-xBU=w1872-h970-rw",
-                "https://lh3.googleusercontent.com/chat_attachment/AP1Ws4vwp9n7rJ7gJMDW-J6jhLRojfBhLbpD8VYmvu0wBPkAh-A8G_wy-7ipMKPoZ7YAY06hMo3fF0INwhxL4xO33BuEP_SBCbgaAVO_f8nBaB0xF_zfQuiaa0gOaO66o7KZNImg4-fZ6ZXDJoxfK8dugrDpJWWJsnO5ywwChmY2ygWS33ec0Qzob_hPv7VzV3o9V8TOc5nsyJbTn8cvn9wjU3htQtKuhYyz8aSJPwrUeaHcT1AOurAXeztUY9QQUzCk_Okvzao-auXvK0_2c-DNQcN6mxdf0QShVyBOJ_6SYhgQuFx3ndjLad6RDiZsVRXaY10=w1872-h970-rw",
-                "https://lh3.googleusercontent.com/chat_attachment/AP1Ws4v1QAPldE2RIFewX5BDkesbO_8qiHk0E2o2V0vDtxQN7TeqhYvnci1NEbQgpV5JZyeXUczMWsB9aNOlIkmO4VMeIa7wGbDz0ZKLpiuN3QVjWDdXx5BRrXJQNi_1M0_Tl6ceJk17J-yK8LHawF7Ty9jev4kQpKvaF3uYw9o3-pWJ79mBtqnWhxAimcCazdlWSgXGmmyR_H2V9bVPdomFSNVK_ZIjz8Ugv7efAFV2rzR8l3SzF1S6txWm1HwTQHQhVf1q33fG1t6HbvK3IaW2O1k_REplTViwqJ3tmJqYUORlzHHa6yZjEhEvfUIp_3tbMvY=w1872-h970-rw",
+                'https://lh3.googleusercontent.com/chat_attachment/AP1Ws4tbcK-lYuDQM5fe7XyCB_x0ckDtrcSwuzQUo4W9Dawuky_7xhyH-rIWkj_LbHqERPoxxR5CugiaWa6uxsNd0Akkxyi1nQ73TXElBP8ttC8mnf8MopLd42ZtZeTyaruJU37D5yXOeaWDYxKxeJjngba0uy2Zakiclchxk-5IXK9KSEgV3rvcmywTUOADdYyiLLwnallVorIhvh8VyA3k7yk1qB88P_IYj84MiSqnifMh0MXQePYcyG-JYP3IdY24S0R7GMi2mRpyI458pv3kfaKaAGPnjX9qmHEu-HPDEJZM0WCrQdCiVwjLzRggXlUb6RQ=w1872-h970-rw',
+                'https://lh3.googleusercontent.com/chat_attachment/AP1Ws4toZBe53Xs0nmNJjBgDQdsghaYyrj9psCLJGFXvYNQNOStMPLpOLIzT6LezH-a6sbUNF-5DAvZPwjQRji5xiZeaHPaHJsT_VOhl-cKeesEfYQpjwNy8XlUAM4BoMwzQcEJmllzMRZEONgOtChEM7eJovWV5LffFEwTdle_VEdN83L8k5T79P8jFXC4OxP5g-uKcc0uJiVPVLG4iUADuslmqaS4HbJRpsYH_bXAUeQAKgDyrPCWB0n1A-reCkMvbEGiaiFmoJj7tgU5X9xblvmPF38yIKI72E4dc8PhRqHiQQPDmmHEZlBq0dtmeck8c00Y=w1872-h970-rw',
+                'https://lh3.googleusercontent.com/chat_attachment/AP1Ws4tEjzH2oWm0cl1n5CEXr_6uL_FB-sihgiMiCpMjHLncYuLpW5QlsNz-5_cLiZ9FCsO32e3zlXrzh0verJ6-VOV2nbnhJVnBJ3zVBaRF5FpTYrKnpA1V7-1MtyV_EhhOhehnk09mkZOSDHJWLrUXqLpd9GixVb4PZ8bXjWL5ebgQMAOOBGPwyCTOnXgNtLKhk1JCWY5Ob96F1Qpq_d4nSFL5WFOK-78VZ4a1EYn0wytsyZcntzmwZcveu3wWi-uTdTpaeghxRTEKwtAt-7F7rpbQSWrvwrV-3fozh9JHFSOMYWhV-xakDFrB2N6UPme20eg=w1872-h970-rw',
+                'https://lh3.googleusercontent.com/chat_attachment/AP1Ws4stBs0Dur8uK2GeRMMCDIicjZBdI8w0lZ2WUfnLl9hu7l4d9R9bj7MQVDAEEvBGXB2Pvc7GdyNBhGX_29kWsHMjoyp6UOWXkE8GWJqrOEkgNzjI4Qvj7RVZOEiweQhDMv8dwsrGDRmcCjm7vva7ZklJXFHCYFKcKYSPqf1-C0kvbBn2tfWjhJFCuhuChQO2jUFn6b8vGIXe7EtohPKfuIm5r69bcDzLz1ck3-fDot1YJJ8CtphfuUEaG2_EPU42vtnmT5iaIvrFz3rbZVzi2Q9lsl_2zw6caL7rQzIE-k9PuwiTgt-qPx-0lNQVXtqkkAg=w1872-h970-rw',
+                'https://lh3.googleusercontent.com/chat_attachment/AP1Ws4vDyGdae2MmUhjzuIFa-I_7ATgLjE1nLIDHdY6tVLxYOJFr1nTYYNNI8mTLH4vriImKUH88NrU1nXv3skwAjQ0Hf1Mpj-LSj9jX4ydn9ftmpzSwaXo5hEOazsBCGg7sOqEt8jGTcN7aFPtmnvDt1BoTAJ-xa4cQ33HaPIGeKAHO1TV52IxooxI8FK8EMTWOI4npaav3BX9tLh1-tF2Mr1-IHyp1M4H4ejUqt96YCAR5Hd1GgixrLX3DmhgbxZJ-7Fcvb93KhICoG_EZcMjlMyZWXlpqcCbGzv-DnMGEL9052jtHgKurvvvYL02j7dzVQHo=w1872-h970-rw',
+                'https://lh3.googleusercontent.com/chat_attachment/AP1Ws4uxD8yzh3lnuOBfg8VsWHDv-aXVcjgk4n_74G3EBeqXSGvlKjcOey9jVq6TCqHwcy9-wfqWfW6cahnZd0DNLrC0YVUhhe-KsXt5rJpDdUU_ATxDx0kWCcjZbSpwEY-9BHYhWzeZzQ4eivzvQcjyUES23gNVAWMybQQMVcnTf0_mtgVuTmS6zRQ9zcc3A6YkqG6H6zKDt7ie_ktR-W_wOQDEOzr6yvz4FvPEuVJ-n1x7u-UrN5hKXoTzg1PFUs8PFLbaj7h53-iwgDApBHlRG7TbLOxzDG650PNUxPkfM7DanzAnzvyAEsXd_9XZRfxh8hs=w1872-h970-rw',
+                'https://lh3.googleusercontent.com/chat_attachment/AP1Ws4see_tqRt8m5sY2abBS1FtqMOOdDyuoVJgWxvs9zx-iIAgOHMQm21r6zNSeY3sBShXfFlT-ZA56wFlVkdc6-WEo3i1PBxRPlRLzc794l-c1AxwyE60p47PdCtN-kGHwbVKY4bHY4sajJ2gTdBBe53iXwe10L6HjFCAZmJhPtU8IpwLaQFQQ9_ZwduA0tLDGOPFSmXGFF_f_vNcit-6ZXZkaWKeqBNlAbTehW-zT5ANlcZd_HFX3aEP_PnEeFoCOpCMkKnhOeL5yXGTfVeohv7Si-Inuc8Rh6QuKWXl_Sf258N4ZulAqf6QSIZfOoHbc8wY=w1872-h970-rw',
+                'https://lh3.googleusercontent.com/chat_attachment/AP1Ws4uzrBq3E0jy4GlbWqbelWoNnEpAlvhicEaPQP73HPpmHPZ_zEB3GMeCBNJIu_dV207wNWEJmBhsJ4bjV9cWwY6WL85IJTdmKlQ9srr9wvDwYFJDNs6A69bR93LQ-08I_rMu6HiKCSRwcPx5mD01eLjgz-_VAQkrcO56qjzmYtQM2v_JBoooUuwFSy0Civa6rqSb9WkFLpRkzkHdGxnRTpBvRnKajxRsXtKhHK0fCO2Qy5yJIJfyntxQinWCiN_haFBwcehL-nT-NIjee2N08PIevTUJZDP6LpdMD8cNM2TR9_p9YXbhmtloXI0ADp2-xBU=w1872-h970-rw',
+                'https://lh3.googleusercontent.com/chat_attachment/AP1Ws4vwp9n7rJ7gJMDW-J6jhLRojfBhLbpD8VYmvu0wBPkAh-A8G_wy-7ipMKPoZ7YAY06hMo3fF0INwhxL4xO33BuEP_SBCbgaAVO_f8nBaB0xF_zfQuiaa0gOaO66o7KZNImg4-fZ6ZXDJoxfK8dugrDpJWWJsnO5ywwChmY2ygWS33ec0Qzob_hPv7VzV3o9V8TOc5nsyJbTn8cvn9wjU3htQtKuhYyz8aSJPwrUeaHcT1AOurAXeztUY9QQUzCk_Okvzao-auXvK0_2c-DNQcN6mxdf0QShVyBOJ_6SYhgQuFx3ndjLad6RDiZsVRXaY10=w1872-h970-rw',
+                'https://lh3.googleusercontent.com/chat_attachment/AP1Ws4v1QAPldE2RIFewX5BDkesbO_8qiHk0E2o2V0vDtxQN7TeqhYvnci1NEbQgpV5JZyeXUczMWsB9aNOlIkmO4VMeIa7wGbDz0ZKLpiuN3QVjWDdXx5BRrXJQNi_1M0_Tl6ceJk17J-yK8LHawF7Ty9jev4kQpKvaF3uYw9o3-pWJ79mBtqnWhxAimcCazdlWSgXGmmyR_H2V9bVPdomFSNVK_ZIjz8Ugv7efAFV2rzR8l3SzF1S6txWm1HwTQHQhVf1q33fG1t6HbvK3IaW2O1k_REplTViwqJ3tmJqYUORlzHHa6yZjEhEvfUIp_3tbMvY=w1872-h970-rw',
             ],
         },
     });
 
     console.log('✅ Seed concluído com sucesso!');
-    console.log(`📚 Livros inseridos: 2`);
+    console.log(`📚 Livros inseridos: 1`);
     console.log(`👥 Equipe inserida: 1`);
 }
 

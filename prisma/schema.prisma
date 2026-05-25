@@ -19,6 +19,7 @@ model Livro {
     descricaoPT         String           @db.Text
     descricaoEN         String           @db.Text
     personagens         String[]
+    fotoPersonagens      String[]
     descricaoPersonagensPT String        @db.Text
     descricaoPersonagensEN String          @db.Text
     contextoHistoricoPT String           @db.Text
@@ -28,6 +29,7 @@ model Livro {
     reviews             Review[]
     videoAulas          Videoaula[]
     curiosidades        Curiosidade[]
+    fotosCuriosidades   String[]
     dicasVestibular     DicaVestibular[]
     simulados           Simulado[]
 

@@ -1,6 +1,7 @@
 import cors from 'cors';
 import 'dotenv/config';
 import express from 'express';
+import path from 'node:path';
 import livroRoutes from './routes/LivroRoute.js';
 import alternativaRoutes from './routes/alternativaRoute.js';
 import arquivoEquipeRoutes from './routes/arquivoEquipeRoute.js';
@@ -41,6 +42,7 @@ app.use(
 );
 
 app.use(express.json());
+app.use('/fotos', express.static(path.resolve(process.cwd(), 'fotos')));
 
 const PORT = process.env.PORT || 3001;
 
