@@ -1,5 +1,3 @@
-// ✅ VERSÃO MELHORADA E ROBUSTA - Integração de Bibliotecas (Projeto Integrador)
-// Autor original: equipe | Melhorias aplicadas: tratamento de config, consistência de env vars, clareza de status
 
 const fontesBiblioteca = [
     {
@@ -44,7 +42,6 @@ const fontesBiblioteca = [
     },
 ];
 
-// ==================== FUNÇÕES AUXILIARES (melhoradas) ====================
 
 const obterPrimeiroValor = (objeto, chaves, valorPadrao = null) => {
     for (const chave of chaves) {
@@ -207,10 +204,9 @@ const montarCabecalhos = (fonte) => {
     return headers;
 };
 
-// ==================== FUNÇÃO PRINCIPAL MELHORADA ====================
 
 const consultarFonteBiblioteca = async (fonte) => {
-    // NOVO: Tratamento claro de configuração ausente
+    
     if (!fonte.urlCompleta) {
         return {
             id: fonte.id,
