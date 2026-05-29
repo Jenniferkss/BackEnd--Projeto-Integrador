@@ -275,7 +275,9 @@ const montarCabecalhos = (fonte) => {
         Accept: 'application/json',
     };
 
-    if (!fonte.requerApiKey || !fonte.apiKey) return headers;
+    if (!fonte.requerApiKey || !fonte.apiKey) {
+        return headers;
+    }
 
     switch (fonte.authType) {
         case 'bearer':
