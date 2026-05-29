@@ -28,7 +28,7 @@ const fontesBiblioteca = [
         urlCompleta:
             process.env.URL_LIVRO_QUARTOS_DESPEJO ||
             'https://backend-projeto-integrador-rana.onrender.com/api/livro',
-        apiKey: process.env.API_KEY_QUARTO_DE_DESPEJO || 'amods',
+        apiKey: null,
         requerApiKey: false,
         authType: 'header',
         authHeaderName: 'x-api-key',
