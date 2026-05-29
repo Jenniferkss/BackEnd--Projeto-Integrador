@@ -1,100 +1,166 @@
 import LivroModel from '../models/LivroModel.js';
 
+const montarDadosDoLivro = (body = {}) => {
+    const tituloPT = body.tituloPT ?? body.tituloPt ?? body.titulo;
+    const tituloEN = body.tituloEN ?? body.tituloEn ?? body.titulo;
+    const capaURl = body.capaURl ?? body.capaUrl;
+    const fotoAutor = body.fotoAutor;
+    const autor = body.autor;
+    const anoPublicacao = body.anoPublicacao;
+    const generoPT = body.generoPT ?? body.generoPt ?? body.genero;
+    const generoEN = body.generoEN ?? body.generoEn ?? body.genero;
+    const descricaoPT = body.descricaoPT ?? body.descricaoPt ?? body.descricao;
+    const descricaoEN = body.descricaoEN ?? body.descricaoEn ?? body.descricao;
+    const personagens = body.personagens;
+    const fotoPersonagens = body.fotoPersonagens;
+    const fotosCuriosidades = body.fotosCuriosidades;
+    const descricaoPersonagensPT = body.descricaoPersonagensPT;
+    const descricaoPersonagensEN = body.descricaoPersonagensEN;
+    const contextoHistoricoPT =
+        body.contextoHistoricoPT ?? body.contextoHistoricoPt ?? body.contextoHistorico;
+    const contextoHistoricoEN =
+        body.contextoHistoricoEN ?? body.contextoHistoricoEn ?? body.contextoHistorico;
+    const analisePT = body.analisePT ?? body.analisePt ?? body.analise;
+    const analiseEN = body.analiseEN ?? body.analiseEn ?? body.analise;
+
+    return {
+        tituloPT,
+        tituloEN,
+        capaURl,
+        fotoAutor,
+        autor,
+        anoPublicacao,
+        generoPT,
+        generoEN,
+        descricaoPT,
+        descricaoEN,
+        personagens,
+        fotoPersonagens,
+        fotosCuriosidades,
+        descricaoPersonagensPT,
+        descricaoPersonagensEN,
+        contextoHistoricoPT,
+        contextoHistoricoEN,
+        analisePT,
+        analiseEN,
+    };
+};
+
+const montarRespostaLivro = (livro) => ({
+    id: livro.id,
+    tituloPT: livro.tituloPT ?? null,
+    tituloEN: livro.tituloEN ?? null,
+    capaURl: livro.capaURl ?? null,
+    fotoAutor: livro.fotoAutor ?? null,
+    autor: livro.autor ?? null,
+    anoPublicacao: livro.anoPublicacao ?? null,
+    generoPT: livro.generoPT ?? null,
+    generoEN: livro.generoEN ?? null,
+    descricaoPT: livro.descricaoPT ?? null,
+    descricaoEN: livro.descricaoEN ?? null,
+    personagens: livro.personagens ?? [],
+    fotoPersonagens: livro.fotoPersonagens ?? [],
+    fotosCuriosidades: livro.fotosCuriosidades ?? [],
+    descricaoPersonagensPT: livro.descricaoPersonagensPT ?? null,
+    descricaoPersonagensEN: livro.descricaoPersonagensEN ?? null,
+    contextoHistoricoPT: livro.contextoHistoricoPT ?? null,
+    contextoHistoricoEN: livro.contextoHistoricoEN ?? null,
+    analisePT: livro.analisePT ?? null,
+    analiseEN: livro.analiseEN ?? null,
+});
+
 export const criar = async (req, res) => {
     try {
         if (!req.body) {
             return res.status(400).json({ error: 'Corpo da requisição vazio. Envie os dados!' });
         }
 
-        if (!req.body.tituloPT && !req.body.tituloPt && !req.body.titulo) {
+        const dadosLivro = montarDadosDoLivro(req.body);
+
+        if (!dadosLivro.tituloPT) {
             return res.status(400).json({ error: 'O campo "tituloPT" é obrigatório!' });
         }
 
-        if (!req.body.tituloEN && !req.body.tituloEn && !req.body.titulo) {
+        if (!dadosLivro.tituloEN) {
             return res.status(400).json({ error: 'O campo "tituloEN" é obrigatório!' });
         }
 
-        if (!req.body.autor) {
+        if (!dadosLivro.autor) {
             return res.status(400).json({ error: 'O campo "autor" é obrigatório!' });
         }
 
-        if (!req.body.generoPT && !req.body.generoPt && !req.body.genero) {
+        if (!dadosLivro.generoPT) {
             return res.status(400).json({ error: 'O campo "generoPT" é obrigatório!' });
         }
 
-        if (!req.body.generoEN && !req.body.generoEn && !req.body.genero) {
+        if (!dadosLivro.generoEN) {
             return res.status(400).json({ error: 'O campo "generoEN" é obrigatório!' });
         }
 
-        if (!req.body.descricaoPT && !req.body.descricaoPt && !req.body.descricao) {
+        if (!dadosLivro.descricaoPT) {
             return res.status(400).json({ error: 'O campo "descricaoPT" é obrigatório!' });
         }
 
-        if (!req.body.descricaoEN && !req.body.descricaoEn && !req.body.descricao) {
+        if (!dadosLivro.descricaoEN) {
             return res.status(400).json({ error: 'O campo "descricaoEN" é obrigatório!' });
         }
 
-        if (!req.body.personagens) {
+        if (!dadosLivro.personagens) {
             return res.status(400).json({ error: 'O campo "personagens" é obrigatório!' });
         }
 
-        if (!req.body.fotoPersonagens) {
+        if (!dadosLivro.fotoPersonagens) {
             return res.status(400).json({ error: 'O campo "fotoPersonagens" é obrigatório!' });
         }
 
-        if (!req.body.fotosCuriosidades) {
+        if (!dadosLivro.fotosCuriosidades) {
             return res.status(400).json({ error: 'O campo "fotosCuriosidades" é obrigatório!' });
         }
 
-        if (
-            !req.body.contextoHistoricoPT &&
-            !req.body.contextoHistoricoPt &&
-            !req.body.contextoHistorico
-        ) {
+        if (!dadosLivro.contextoHistoricoPT) {
             return res.status(400).json({ error: 'O campo "contextoHistoricoPT" é obrigatório!' });
         }
 
-        if (
-            !req.body.contextoHistoricoEN &&
-            !req.body.contextoHistoricoEn &&
-            !req.body.contextoHistorico
-        ) {
+        if (!dadosLivro.contextoHistoricoEN) {
             return res.status(400).json({ error: 'O campo "contextoHistoricoEN" é obrigatório!' });
         }
 
-        if (!req.body.analisePT && !req.body.analisePt && !req.body.analise) {
+        if (!dadosLivro.analisePT) {
             return res.status(400).json({ error: 'O campo "analisePT" é obrigatório!' });
         }
 
-        if (!req.body.analiseEN && !req.body.analiseEn && !req.body.analise) {
+        if (!dadosLivro.analiseEN) {
             return res.status(400).json({ error: 'O campo "analiseEN" é obrigatório!' });
         }
 
-        if (!req.body.descricaoPersonagensPT) {
+        if (!dadosLivro.descricaoPersonagensPT) {
             return res
                 .status(400)
                 .json({ error: 'O campo "descricaoPersonagensPT" é obrigatório!' });
         }
 
-        if (!req.body.descricaoPersonagensEN) {
+        if (!dadosLivro.descricaoPersonagensEN) {
             return res
                 .status(400)
                 .json({ error: 'O campo "descricaoPersonagensEN" é obrigatório!' });
         }
 
         if (
-            req.body.anoPublicacao !== undefined &&
-            req.body.anoPublicacao !== null &&
-            req.body.anoPublicacao !== '' &&
-            Number.isNaN(parseInt(req.body.anoPublicacao, 10))
+            dadosLivro.anoPublicacao !== undefined &&
+            dadosLivro.anoPublicacao !== null &&
+            dadosLivro.anoPublicacao !== '' &&
+            Number.isNaN(parseInt(dadosLivro.anoPublicacao, 10))
         ) {
             return res.status(400).json({ error: 'O campo "anoPublicacao" deve ser numérico.' });
         }
 
-        const livro = new LivroModel(req.body);
+        const livro = new LivroModel(dadosLivro);
         const data = await livro.criar();
 
-        return res.status(201).json({ message: 'Registro do livro criado com sucesso!', data });
+        return res.status(201).json({
+            message: 'Registro do livro criado com sucesso!',
+            data: montarRespostaLivro(data),
+        });
     } catch (error) {
         console.error('Erro ao criar:', error);
         return res.status(error.status || 500).json({
@@ -111,7 +177,11 @@ export const buscarTodos = async (req, res) => {
             return res.status(400).json({ message: 'Nenhum livro encontrado.' });
         }
 
-        return res.status(200).json(registros);
+        const livrosFormatados = registros.map((livro) => montarRespostaLivro(livro));
+
+        console.log('Livros retornados em buscarTodos:', livrosFormatados);
+
+        return res.status(200).json(livrosFormatados);
     } catch (error) {
         console.error('Erro ao buscar:', error);
         return res.status(error.status || 500).json({
@@ -134,7 +204,11 @@ export const buscarPorId = async (req, res) => {
             return res.status(404).json({ error: 'Registro não encontrado.' });
         }
 
-        return res.status(200).json({ data: livro });
+        const livroFormatado = montarRespostaLivro(livro);
+
+        console.log('Livro retornado em buscarPorId:', livroFormatado);
+
+        return res.status(200).json({ data: livroFormatado });
     } catch (error) {
         console.error('Erro ao buscar:', error);
         return res.status(error.status || 500).json({
@@ -161,129 +235,90 @@ export const atualizar = async (req, res) => {
             return res.status(404).json({ error: 'Registro não encontrado para atualizar.' });
         }
 
-        if (req.body.tituloPT !== undefined) {
-            livro.tituloPT = req.body.tituloPT;
-        } else if (req.body.tituloPt !== undefined) {
-            livro.tituloPT = req.body.tituloPt;
-        } else if (req.body.titulo !== undefined) {
-            livro.tituloPT = req.body.titulo;
+        const dadosLivro = montarDadosDoLivro(req.body);
+
+        if (dadosLivro.tituloPT !== undefined) {
+            livro.tituloPT = dadosLivro.tituloPT;
         }
 
-        if (req.body.tituloEN !== undefined) {
-            livro.tituloEN = req.body.tituloEN;
-        } else if (req.body.tituloEn !== undefined) {
-            livro.tituloEN = req.body.tituloEn;
-        } else if (req.body.titulo !== undefined) {
-            livro.tituloEN = req.body.titulo;
+        if (dadosLivro.tituloEN !== undefined) {
+            livro.tituloEN = dadosLivro.tituloEN;
         }
 
-        if (req.body.autor !== undefined) {
-            livro.autor = req.body.autor;
+        if (dadosLivro.capaURl !== undefined) {
+            livro.capaURl = dadosLivro.capaURl;
         }
 
-        if (req.body.anoPublicacao !== undefined) {
-            livro.anoPublicacao = req.body.anoPublicacao;
+        if (dadosLivro.fotoAutor !== undefined) {
+            livro.fotoAutor = dadosLivro.fotoAutor;
         }
 
-        if (req.body.generoPT !== undefined) {
-            livro.generoPT = req.body.generoPT;
-        } else if (req.body.generoPt !== undefined) {
-            livro.generoPT = req.body.generoPt;
-        } else if (req.body.genero !== undefined) {
-            livro.generoPT = req.body.genero;
+        if (dadosLivro.autor !== undefined) {
+            livro.autor = dadosLivro.autor;
         }
 
-        if (req.body.generoEN !== undefined) {
-            livro.generoEN = req.body.generoEN;
-        } else if (req.body.generoEn !== undefined) {
-            livro.generoEN = req.body.generoEn;
-        } else if (req.body.genero !== undefined) {
-            livro.generoEN = req.body.genero;
+        if (dadosLivro.anoPublicacao !== undefined) {
+            livro.anoPublicacao = dadosLivro.anoPublicacao;
         }
 
-        if (req.body.descricaoPT !== undefined) {
-            livro.descricaoPT = req.body.descricaoPT;
-        } else if (req.body.descricaoPt !== undefined) {
-            livro.descricaoPT = req.body.descricaoPt;
-        } else if (req.body.descricao !== undefined) {
-            livro.descricaoPT = req.body.descricao;
+        if (dadosLivro.generoPT !== undefined) {
+            livro.generoPT = dadosLivro.generoPT;
         }
 
-        if (req.body.descricaoEN !== undefined) {
-            livro.descricaoEN = req.body.descricaoEN;
-        } else if (req.body.descricaoEn !== undefined) {
-            livro.descricaoEN = req.body.descricaoEn;
-        } else if (req.body.descricao !== undefined) {
-            livro.descricaoEN = req.body.descricao;
+        if (dadosLivro.generoEN !== undefined) {
+            livro.generoEN = dadosLivro.generoEN;
         }
 
-        if (req.body.personagens !== undefined) {
-            livro.personagens = req.body.personagens;
+        if (dadosLivro.descricaoPT !== undefined) {
+            livro.descricaoPT = dadosLivro.descricaoPT;
         }
 
-        if (req.body.fotoPersonagens !== undefined) {
-            livro.fotoPersonagens = req.body.fotoPersonagens;
+        if (dadosLivro.descricaoEN !== undefined) {
+            livro.descricaoEN = dadosLivro.descricaoEN;
         }
 
-        if (req.body.fotosCuriosidades !== undefined) {
-            livro.fotosCuriosidades = req.body.fotosCuriosidades;
+        if (dadosLivro.personagens !== undefined) {
+            livro.personagens = dadosLivro.personagens;
         }
 
-        if (req.body.contextoHistoricoPT !== undefined) {
-            livro.contextoHistoricoPT = req.body.contextoHistoricoPT;
-        } else if (req.body.contextoHistoricoPt !== undefined) {
-            livro.contextoHistoricoPT = req.body.contextoHistoricoPt;
-        } else if (req.body.contextoHistorico !== undefined) {
-            livro.contextoHistoricoPT = req.body.contextoHistorico;
+        if (dadosLivro.fotoPersonagens !== undefined) {
+            livro.fotoPersonagens = dadosLivro.fotoPersonagens;
         }
 
-        if (req.body.contextoHistoricoEN !== undefined) {
-            livro.contextoHistoricoEN = req.body.contextoHistoricoEN;
-        } else if (req.body.contextoHistoricoEn !== undefined) {
-            livro.contextoHistoricoEN = req.body.contextoHistoricoEn;
-        } else if (req.body.contextoHistorico !== undefined) {
-            livro.contextoHistoricoEN = req.body.contextoHistorico;
+        if (dadosLivro.fotosCuriosidades !== undefined) {
+            livro.fotosCuriosidades = dadosLivro.fotosCuriosidades;
         }
 
-        if (req.body.analisePT !== undefined) {
-            livro.analisePT = req.body.analisePT;
-        } else if (req.body.analisePt !== undefined) {
-            livro.analisePT = req.body.analisePt;
-        } else if (req.body.analise !== undefined) {
-            livro.analisePT = req.body.analise;
+        if (dadosLivro.descricaoPersonagensPT !== undefined) {
+            livro.descricaoPersonagensPT = dadosLivro.descricaoPersonagensPT;
         }
 
-        if (req.body.analiseEN !== undefined) {
-            livro.analiseEN = req.body.analiseEN;
-        } else if (req.body.analiseEn !== undefined) {
-            livro.analiseEN = req.body.analiseEn;
-        } else if (req.body.analise !== undefined) {
-            livro.analiseEN = req.body.analise;
+        if (dadosLivro.descricaoPersonagensEN !== undefined) {
+            livro.descricaoPersonagensEN = dadosLivro.descricaoPersonagensEN;
         }
 
-        if (req.body.descricaoPersonagensPT !== undefined) {
-            livro.descricaoPersonagensPT = req.body.descricaoPersonagensPT;
+        if (dadosLivro.contextoHistoricoPT !== undefined) {
+            livro.contextoHistoricoPT = dadosLivro.contextoHistoricoPT;
         }
 
-        if (req.body.descricaoPersonagensEN !== undefined) {
-            livro.descricaoPersonagensEN = req.body.descricaoPersonagensEN;
+        if (dadosLivro.contextoHistoricoEN !== undefined) {
+            livro.contextoHistoricoEN = dadosLivro.contextoHistoricoEN;
         }
 
-        if (req.body.capaURl !== undefined) {
-            livro.capaURl = req.body.capaURl;
-        } else if (req.body.capaUrl !== undefined) {
-            livro.capaURl = req.body.capaUrl;
+        if (dadosLivro.analisePT !== undefined) {
+            livro.analisePT = dadosLivro.analisePT;
         }
 
-        if (req.body.fotoAutor !== undefined) {
-            livro.fotoAutor = req.body.fotoAutor;
+        if (dadosLivro.analiseEN !== undefined) {
+            livro.analiseEN = dadosLivro.analiseEN;
         }
 
         const data = await livro.atualizar();
 
-        return res
-            .status(200)
-            .json({ message: `O registro "${data.tituloPT}" foi atualizado com sucesso!`, data });
+        return res.status(200).json({
+            message: `O registro "${data.tituloPT}" foi atualizado com sucesso!`,
+            data: montarRespostaLivro(data),
+        });
     } catch (error) {
         console.error('Erro ao atualizar:', error);
         return res.status(error.status || 500).json({
@@ -310,7 +345,7 @@ export const deletar = async (req, res) => {
 
         return res.status(200).json({
             message: `O registro "${livro.tituloPT}" foi deletado com sucesso!`,
-            deletado: livro,
+            deletado: montarRespostaLivro(livro),
         });
     } catch (error) {
         console.error('Erro ao deletar:', error);
