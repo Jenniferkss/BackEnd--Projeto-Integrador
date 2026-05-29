@@ -1,36 +1,38 @@
-// ✅ VERSÃO MELHORADA E ROBUSTA - Integração de Bibliotecas (Projeto Integrador)
-// Autor original: equipe | Melhorias aplicadas: tratamento de config, consistência de env vars, clareza de status
-
 const fontesBiblioteca = [
     {
         id: 'capitaes_arena',
         nomeLivro: 'Capitães da Areia',
-        urlCompleta: process.env.URL_LIVRO_CAPITAES_DA_AREIA || 'https://readflow-m8o6.onrender.com/api/livros',
+        urlCompleta:
+            process.env.URL_LIVRO_CAPITAES_DA_AREIA ||
+            'https://readflow-m8o6.onrender.com/api/livros',
         apiKey: process.env.API_KEY_CAPITAES_DA_AREIA,
         requerApiKey: true,
         authType: 'header',
         authHeaderName: 'x-api-key',
-        timeoutMs: 1000,
+        timeoutMs: 8000,
     },
     {
         id: 'o_guarani',
         nomeLivro: 'O Guarani',
-        urlCompleta: process.env.URL_LIVRO_O_GUARANI || 'https://bookpedia-backend-4ab3.onrender.com/livros',
+        urlCompleta:
+            process.env.URL_LIVRO_O_GUARANI || 'https://bookpedia-backend-4ab3.onrender.com/livros',
         apiKey: process.env.API_KEY_O_GUARANI,
         requerApiKey: true,
         authType: 'header',
         authHeaderName: 'x-api-key',
-        timeoutMs: 1000,
+        timeoutMs: 8000,
     },
     {
         id: 'quartos_despejo',
         nomeLivro: 'Quarto de Despejo',
-        urlCompleta: process.env.URL_LIVRO_QUARTOS_DESPEJO || 'https://backend-projeto-integrador-rana.onrender.com/api/livro',
-        apiKey: process.env.API_KEY_QUARTOS_DESPEJO || 'amods', // usa env se existir, senão fallback 'amods'
+        urlCompleta:
+            process.env.URL_LIVRO_QUARTOS_DESPEJO ||
+            'https://backend-projeto-integrador-rana.onrender.com/api/livro',
+        apiKey: process.env.API_KEY_QUARTOS_DESPEJO || 'amods',
         requerApiKey: true,
         authType: 'header',
         authHeaderName: 'x-api-key',
-        timeoutMs: 1000,
+        timeoutMs: 8000,
     },
     {
         id: 'memorias_bras_cubas',
@@ -40,21 +42,9 @@ const fontesBiblioteca = [
         requerApiKey: true,
         authType: 'header',
         authHeaderName: 'x-api-key',
-        timeoutMs: 1000,
+        timeoutMs: 8000,
     },
 ];
-
-// ==================== FUNÇÕES AUXILIARES (melhoradas) ====================
-
-const obterPrimeiroValor = (objeto, chaves, valorPadrao = null) => {
-    for (const chave of chaves) {
-        const valor = objeto?.[chave];
-        if (valor !== undefined && valor !== null && valor !== '') {
-            return valor;
-        }
-    }
-    return valorPadrao;
-};
 
 const normalizarLista = (valor) => {
     if (Array.isArray(valor)) {
@@ -79,115 +69,210 @@ const extrairListaResposta = (payload) => {
     return [];
 };
 
+const pegarPrimeiroValor = (item, chaves, valorPadrao = null) => {
+    for (const chave of chaves) {
+        const valorAtual = item?.[chave];
+
+        if (valorAtual !== undefined && valorAtual !== null && valorAtual !== '') {
+            return valorAtual;
+        }
+    }
+
+    return valorPadrao;
+};
+
 const normalizarLivro = (item) => ({
     ...item,
-    titulo: obterPrimeiroValor(
+    titulo: pegarPrimeiroValor(
         item,
-        ['tituloPT', 'tituloPt', 'titulo_pt', 'titulo', 'title', 'nome', 'nomeLivro', 'obraPt', 'obraPT'],
+        [
+            'tituloPT',
+            'tituloPt',
+            'titulo_pt',
+            'titulo',
+            'title',
+            'nome',
+            'nomeLivro',
+            'obraPt',
+            'obraPT',
+        ],
         'Título não informado'
     ),
-    titulo_pt: obterPrimeiroValor(item, ['tituloPT', 'tituloPt', 'titulo_pt', 'titulo'], ''),
-    tituloPt: obterPrimeiroValor(item, ['tituloPT', 'tituloPt', 'titulo_pt', 'titulo'], ''),
-    tituloPT: obterPrimeiroValor(item, ['tituloPT', 'tituloPt', 'titulo_pt', 'titulo'], ''),
-    titulo_en: obterPrimeiroValor(item, ['tituloEN', 'tituloEn', 'titulo_en', 'titulo'], ''),
-    tituloEn: obterPrimeiroValor(item, ['tituloEN', 'tituloEn', 'titulo_en', 'titulo'], ''),
-    tituloEN: obterPrimeiroValor(item, ['tituloEN', 'tituloEn', 'titulo_en', 'titulo'], ''),
-    autor: obterPrimeiroValor(item, ['autor', 'author', 'nomeAutor'], 'Autor não informado'),
-    capa_url: obterPrimeiroValor(
+    titulo_pt: pegarPrimeiroValor(item, ['tituloPT', 'tituloPt', 'titulo_pt', 'titulo'], ''),
+    tituloPt: pegarPrimeiroValor(item, ['tituloPT', 'tituloPt', 'titulo_pt', 'titulo'], ''),
+    tituloPT: pegarPrimeiroValor(item, ['tituloPT', 'tituloPt', 'titulo_pt', 'titulo'], ''),
+    titulo_en: pegarPrimeiroValor(item, ['tituloEN', 'tituloEn', 'titulo_en', 'titulo'], ''),
+    tituloEn: pegarPrimeiroValor(item, ['tituloEN', 'tituloEn', 'titulo_en', 'titulo'], ''),
+    tituloEN: pegarPrimeiroValor(item, ['tituloEN', 'tituloEn', 'titulo_en', 'titulo'], ''),
+    autor: pegarPrimeiroValor(item, ['autor', 'author', 'nomeAutor'], 'Autor não informado'),
+    capa_url: pegarPrimeiroValor(
         item,
         ['capaURl', 'capaUrl', 'capa', 'image', 'cover', 'url_capa', 'imagem', 'foto'],
         null
     ),
-    capaUrl: obterPrimeiroValor(
+    capaUrl: pegarPrimeiroValor(
         item,
         ['capaURl', 'capaUrl', 'capa', 'image', 'cover', 'url_capa', 'imagem', 'foto'],
         null
     ),
-    capaURl: obterPrimeiroValor(
+    capaURl: pegarPrimeiroValor(
         item,
         ['capaURl', 'capaUrl', 'capa', 'image', 'cover', 'url_capa', 'imagem', 'foto'],
         null
     ),
-    ano: obterPrimeiroValor(item, ['ano', 'year', 'ano_publicacao'], 'N/A'),
-    anoPublicacao: obterPrimeiroValor(item, ['anoPublicacao', 'ano', 'year', 'ano_publicacao'], 'N/A'),
-    genero_pt: obterPrimeiroValor(
+    ano: pegarPrimeiroValor(item, ['ano', 'year', 'ano_publicacao'], 'N/A'),
+    anoPublicacao: pegarPrimeiroValor(
+        item,
+        ['anoPublicacao', 'ano', 'year', 'ano_publicacao'],
+        'N/A'
+    ),
+    genero_pt: pegarPrimeiroValor(
         item,
         ['generoPT', 'generoPt', 'genero_pt', 'genero', 'genre_pt', 'categoria', 'category'],
         'Gênero não informado'
     ),
-    generoPt: obterPrimeiroValor(
+    generoPt: pegarPrimeiroValor(
         item,
         ['generoPT', 'generoPt', 'genero_pt', 'genero', 'genre_pt', 'categoria', 'category'],
         'Gênero não informado'
     ),
-    generoPT: obterPrimeiroValor(
+    generoPT: pegarPrimeiroValor(
         item,
         ['generoPT', 'generoPt', 'genero_pt', 'genero', 'genre_pt', 'categoria', 'category'],
         'Gênero não informado'
     ),
-    genero_en: obterPrimeiroValor(item, ['generoEN', 'generoEn', 'genero_en', 'genre', 'category_en'], 'Genre not informed'),
-    generoEn: obterPrimeiroValor(item, ['generoEN', 'generoEn', 'genero_en', 'genre', 'category_en'], 'Genre not informed'),
-    generoEN: obterPrimeiroValor(item, ['generoEN', 'generoEn', 'genero_en', 'genre', 'category_en'], 'Genre not informed'),
-    enredo_pt: obterPrimeiroValor(
+    genero_en: pegarPrimeiroValor(
         item,
-        ['descricaoPT', 'descricaoPt', 'descricao_pt', 'enredo_pt', 'resumo', 'sinopse', 'summary', 'description_pt'],
+        ['generoEN', 'generoEn', 'genero_en', 'genre', 'category_en'],
+        'Genre not informed'
+    ),
+    generoEn: pegarPrimeiroValor(
+        item,
+        ['generoEN', 'generoEn', 'genero_en', 'genre', 'category_en'],
+        'Genre not informed'
+    ),
+    generoEN: pegarPrimeiroValor(
+        item,
+        ['generoEN', 'generoEn', 'genero_en', 'genre', 'category_en'],
+        'Genre not informed'
+    ),
+    enredo_pt: pegarPrimeiroValor(
+        item,
+        [
+            'descricaoPT',
+            'descricaoPt',
+            'descricao_pt',
+            'enredo_pt',
+            'resumo',
+            'sinopse',
+            'summary',
+            'description_pt',
+        ],
         'Enredo não informado'
     ),
-    enredoPt: obterPrimeiroValor(
+    enredoPt: pegarPrimeiroValor(
         item,
-        ['descricaoPT', 'descricaoPt', 'descricao_pt', 'enredo_pt', 'resumo', 'sinopse', 'summary', 'description_pt'],
+        [
+            'descricaoPT',
+            'descricaoPt',
+            'descricao_pt',
+            'enredo_pt',
+            'resumo',
+            'sinopse',
+            'summary',
+            'description_pt',
+        ],
         'Enredo não informado'
     ),
-    descricaoPT: obterPrimeiroValor(
+    descricaoPT: pegarPrimeiroValor(
         item,
-        ['descricaoPT', 'descricaoPt', 'descricao_pt', 'enredo_pt', 'resumo', 'sinopse', 'summary', 'description_pt'],
+        [
+            'descricaoPT',
+            'descricaoPt',
+            'descricao_pt',
+            'enredo_pt',
+            'resumo',
+            'sinopse',
+            'summary',
+            'description_pt',
+        ],
         'Enredo não informado'
     ),
-    descricaoPt: obterPrimeiroValor(
+    descricaoPt: pegarPrimeiroValor(
         item,
-        ['descricaoPT', 'descricaoPt', 'descricao_pt', 'enredo_pt', 'resumo', 'sinopse', 'summary', 'description_pt'],
+        [
+            'descricaoPT',
+            'descricaoPt',
+            'descricao_pt',
+            'enredo_pt',
+            'resumo',
+            'sinopse',
+            'summary',
+            'description_pt',
+        ],
         'Enredo não informado'
     ),
-    descricao: obterPrimeiroValor(
+    descricao: pegarPrimeiroValor(
         item,
-        ['descricaoPT', 'descricaoPt', 'descricao_pt', 'enredo_pt', 'resumo', 'sinopse', 'summary', 'description_pt'],
+        [
+            'descricaoPT',
+            'descricaoPt',
+            'descricao_pt',
+            'enredo_pt',
+            'resumo',
+            'sinopse',
+            'summary',
+            'description_pt',
+        ],
         'Enredo não informado'
     ),
-    enredo_en: obterPrimeiroValor(
+    enredo_en: pegarPrimeiroValor(
         item,
         ['descricaoEN', 'descricaoEn', 'descricao_en', 'enredo_en', 'description', 'summary_en'],
         'Description not informed'
     ),
-    enredoEn: obterPrimeiroValor(
+    enredoEn: pegarPrimeiroValor(
         item,
         ['descricaoEN', 'descricaoEn', 'descricao_en', 'enredo_en', 'description', 'summary_en'],
         'Description not informed'
     ),
-    descricaoEN: obterPrimeiroValor(
+    descricaoEN: pegarPrimeiroValor(
         item,
         ['descricaoEN', 'descricaoEn', 'descricao_en', 'enredo_en', 'description', 'summary_en'],
         'Description not informed'
     ),
-    descricaoEn: obterPrimeiroValor(
+    descricaoEn: pegarPrimeiroValor(
         item,
         ['descricaoEN', 'descricaoEn', 'descricao_en', 'enredo_en', 'description', 'summary_en'],
         'Description not informed'
     ),
-    fotoAutor: obterPrimeiroValor(item, ['fotoAutor', 'foto_autor', 'authorPhoto', 'foto'], null),
+    fotoAutor: pegarPrimeiroValor(item, ['fotoAutor', 'foto_autor', 'authorPhoto', 'foto'], null),
     fotoPersonagens: normalizarLista(
-        obterPrimeiroValor(item, ['fotoPersonagens', 'foto_personagens', 'fotosPersonagens'], [])
+        pegarPrimeiroValor(item, ['fotoPersonagens', 'foto_personagens', 'fotosPersonagens'], [])
     ),
     fotosCuriosidades: normalizarLista(
-        obterPrimeiroValor(item, ['fotosCuriosidades', 'fotos_curiosidades', 'fotosCuriosidade'], [])
+        pegarPrimeiroValor(
+            item,
+            ['fotosCuriosidades', 'fotos_curiosidades', 'fotosCuriosidade'],
+            []
+        )
     ),
-    fotoAutorUrl: obterPrimeiroValor(item, ['fotoAutor', 'foto_autor', 'authorPhoto', 'foto'], null),
-    fotoAutorURL: obterPrimeiroValor(item, ['fotoAutor', 'foto_autor', 'authorPhoto', 'foto'], null),
+    fotoAutorUrl: pegarPrimeiroValor(
+        item,
+        ['fotoAutor', 'foto_autor', 'authorPhoto', 'foto'],
+        null
+    ),
+    fotoAutorURL: pegarPrimeiroValor(
+        item,
+        ['fotoAutor', 'foto_autor', 'authorPhoto', 'foto'],
+        null
+    ),
 });
 
 const montarCabecalhos = (fonte) => {
     const headers = {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        Accept: 'application/json',
     };
 
     if (!fonte.requerApiKey || !fonte.apiKey) return headers;
@@ -207,10 +292,7 @@ const montarCabecalhos = (fonte) => {
     return headers;
 };
 
-// ==================== FUNÇÃO PRINCIPAL MELHORADA ====================
-
 const consultarFonteBiblioteca = async (fonte) => {
-    // NOVO: Tratamento claro de configuração ausente
     if (!fonte.urlCompleta) {
         return {
             id: fonte.id,
@@ -218,7 +300,7 @@ const consultarFonteBiblioteca = async (fonte) => {
             statusApi: 'Não configurado',
             totalItens: 0,
             conteudo: null,
-            erro: 'URL da fonte não definida (adicione URL_LIVRO_* no Render)',
+            erro: `Fonte ${fonte.nomeLivro} sem URL configurada.`,
         };
     }
 
@@ -229,7 +311,7 @@ const consultarFonteBiblioteca = async (fonte) => {
             statusApi: 'Não configurado',
             totalItens: 0,
             conteudo: null,
-            erro: 'API Key ausente (adicione API_KEY_* no Render)',
+            erro: `Fonte ${fonte.nomeLivro} sem API Key configurada.`,
         };
     }
 
@@ -240,7 +322,7 @@ const consultarFonteBiblioteca = async (fonte) => {
     }
 
     const controlador = new AbortController();
-    const tempoLimiteMs = fonte.timeoutMs || 12000;
+    const tempoLimiteMs = fonte.timeoutMs || 8000;
     const temporizador = setTimeout(() => controlador.abort(), tempoLimiteMs);
 
     try {
@@ -269,7 +351,7 @@ const consultarFonteBiblioteca = async (fonte) => {
         };
     } catch (erro) {
         if (erro.name === 'AbortError') {
-            throw new Error(`Timeout após ${tempoLimiteMs}ms`);
+            throw new Error(`Timeout ao consultar ${fonte.nomeLivro} após ${tempoLimiteMs}ms`);
         }
         throw erro;
     } finally {
@@ -279,23 +361,24 @@ const consultarFonteBiblioteca = async (fonte) => {
 
 export const obterBibliotecaCompleta = async (req, res) => {
     try {
-        const promessas = fontesBiblioteca.map(async (fonte) => {
-            try {
-                return await consultarFonteBiblioteca(fonte);
-            } catch (erroFonte) {
-                console.error(`[Integração] Falha em "${fonte.nomeLivro}":`, erroFonte.message);
-                return {
-                    id: fonte.id,
-                    livro: fonte.nomeLivro,
-                    statusApi: 'Indisponível',
-                    totalItens: 0,
-                    conteudo: null,
-                    erro: erroFonte.message,
-                };
-            }
-        });
+        const bibliotecaCompleta = await Promise.all(
+            fontesBiblioteca.map(async (fonte) => {
+                try {
+                    return await consultarFonteBiblioteca(fonte);
+                } catch (erroFonte) {
+                    console.error(`[Integração] ${fonte.nomeLivro} falhou:`, erroFonte.message);
+                    return {
+                        id: fonte.id,
+                        livro: fonte.nomeLivro,
+                        statusApi: 'Indisponível',
+                        totalItens: 0,
+                        conteudo: null,
+                        erro: `Não foi possível consultar ${fonte.nomeLivro}: ${erroFonte.message}`,
+                    };
+                }
+            })
+        );
 
-        const bibliotecaCompleta = await Promise.all(promessas);
         return res.status(200).json(bibliotecaCompleta);
     } catch (error) {
         console.error('Erro crítico no agregador de biblioteca:', error.message);
