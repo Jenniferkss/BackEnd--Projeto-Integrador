@@ -1,224 +1,423 @@
-import { PrismaPg } from '@prisma/adapter-pg';
-import pkg from '@prisma/client';
-import 'dotenv/config';
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import pg from 'pg';
+import { PrismaPg } from '@prisma/adapter-pg'
+import pkg from '@prisma/client'
+import 'dotenv/config'
+import pg from 'pg'
 
-const { PrismaClient } = pkg;
-const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+const { PrismaClient } = pkg
 
-const imagemParaDataUrl = async (arquivo) => {
-    const caminho = path.resolve(process.cwd(), 'fotos', arquivo);
-    const extensao = path.extname(arquivo).toLowerCase();
-    const mimeType =
-        extensao === '.png' ? 'image/png' : extensao === '.webp' ? 'image/webp' : 'image/jpeg';
+const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL })
+const adapter = new PrismaPg(pool)
+const prisma = new PrismaClient({ adapter })
 
-    const buffer = await fs.readFile(caminho);
-    return `data:${mimeType};base64,${buffer.toString('base64')}`;
-};
 
 async function limparDados() {
-    await prisma.alternativa.deleteMany();
-    await prisma.questao.deleteMany();
-    await prisma.simulado.deleteMany();
-    await prisma.review.deleteMany();
-    await prisma.videoaula.deleteMany();
-    await prisma.curiosidade.deleteMany();
-    await prisma.dicaVestibular.deleteMany();
-    await prisma.livro.deleteMany();
-    await prisma.equipe.deleteMany();
+  console.log('🧹 Limpando dados antigos...')
+  await prisma.alternativa.deleteMany()
+  await prisma.questao.deleteMany()
+  await prisma.simulado.deleteMany()
+  await prisma.review.deleteMany()
+  await prisma.videoaula.deleteMany()
+  await prisma.curiosidade.deleteMany()
+  await prisma.dicaVestibular.deleteMany()
+  await prisma.livro.deleteMany()
+  await prisma.equipe.deleteMany()
 }
 
 async function main() {
-    console.log('🌱 Limpando dados antigos...');
-    await limparDados();
+  await limparDados()
 
-    console.log('📦 Inserindo novos registros...');
+  console.log('📚 Inserindo Livro: Quarto de Despejo...')
 
-    const capaLivro = await imagemParaDataUrl('Capitaes da areia.jpg');
-    const fotoAutor = await imagemParaDataUrl('memorias postumas de bras cubas.jpg');
-    const fotoPersonagem1 = await imagemParaDataUrl('O guarani.jpg');
-    const fotoPersonagem2 = await imagemParaDataUrl('olhosDagua.jpg');
-    const fotoCuriosidade = await imagemParaDataUrl('vidas secas.jpg');
+  const livro = await prisma.livro.create({
+    data: {
+      tituloPT: 'Quarto de Despejo',
+      tituloEN: 'Child of the Dark',
+      capaURl: 'https://m.media-amazon.com/images/I/71z42zpEwbL.jpg',
+      fotoAutor:
+        'https://conexao.ufrj.br/2022/03/carolina-maria-de-jesus-a-mulher-negra-que-criou-mundos-do-quarto-de-despejo/',
+      autor: 'Carolina Maria de Jesus',
+      anoPublicacao: 1960,
+      generoPT: 'Diário, Autobiografia, Literatura Testemunhal',
+      generoEN: 'Diary, Autobiography, Testimonial Literature',
 
-    await prisma.livro.create({
-        data: {
-            tituloPT: 'Quarto de despejo',
-            tituloEN: 'Child of the Dark',
-            capaURl: capaLivro,
-            fotoAutor,
-            autor: 'Carolina Maria de Jesus',
-            anoPublicacao: 1960,
-            generoPT: 'Diário, Autobiografia, Literatura Testemunhal',
-            generoEN: ' Diary, Autobiography, Testimonial Literature',
-            descricaoPT:
-                'Narrado por Bentinho, o romance explora ciúmes, memória e ambiguidade na relação com Capitu, questionando a confiabilidade do narrador.',
-            descricaoEN:
-                "Narrated by Bentinho, the novel explores jealousy, memory, and ambiguity in his relationship with Capitu, questioning the narrator's reliability.",
-            personagens: [
-                'Bentinho (Dom Casmurro)',
-                'Capitu',
-                'Ezequiel',
-                'José Dias',
-                'Sancha',
-                'Escobar',
-            ],
-            fotoPersonagens: [fotoPersonagem1, fotoPersonagem2],
-            fotosCuriosidades: [fotoCuriosidade],
-            descricaoPersonagensPT:
-                'Bentinho é um homem inseguro e ciumento; Capitu possui olhos de ressaca e personalidade forte; Escobar é o amigo calculista e pragmático.',
-            descricaoPersonagensEN:
-                'Bentinho is an insecure and jealous man; Capitu has tide-like eyes and a strong personality; Escobar is the calculative and pragmatic friend.',
-            contextoHistoricoPT:
-                'Brasil do século XIX, Rio de Janeiro imperial, ascensão da burguesia e influências do Realismo europeu.',
-            contextoHistoricoEN:
-                '19th century Brazil, Imperial Rio de Janeiro, rise of the bourgeoisie, and influences of European Realism.',
-            analisePT:
-                'Obra-prima da ironia machadiana: o foco narrativo em primeira pessoa cria dúvida sobre a traição de Capitu, convidando o leitor a interpretar.',
-            analiseEN:
-                "A masterpiece of Machadian irony: the first-person narration casts doubt on Capitu's alleged betrayal, inviting reader interpretation.",
-            reviews: {
-                create: [
-                    {
-                        autor: 'Prof. Literatura',
-                        comentarioPt:
-                            'Leitura essencial para entender o Realismo no Brasil. A ambiguidade é genial.',
-                        comentarioEn:
-                            'Essential reading to understand Brazilian Realism. The ambiguity is brilliant.',
-                        avaliacao: 5,
-                    },
-                    {
-                        autor: 'Estudante Vestibular',
-                        comentarioPt:
-                            'Desafiador, mas recompensador. A narrativa não linear exige atenção.',
-                        comentarioEn:
-                            'Challenging but rewarding. The non-linear narrative demands attention.',
-                        avaliacao: 4,
-                    },
-                ],
-            },
-            videoAulas: {
-                create: [
-                    {
-                        tituloPt: 'Dom Casmurro: Narrador Confiável?',
-                        tituloEn: 'Dom Casmurro: Is the Narrator Reliable?',
-                        urlMidia: 'https://www.youtube.com/watch?v=exemplo1',
-                        descricaoPt: 'Análise da focalização narrativa e recursos de ambiguidade.',
-                        descricaoEn: 'Analysis of narrative focalization and ambiguity devices.',
-                    },
-                ],
-            },
-            curiosidades: {
-                create: [
-                    {
-                        tituloPt: 'Título Enigmático',
-                        tituloEn: 'Enigmatic Title',
-                        conteudoPt:
-                            '"Casmurro" significa teimoso, calado. Bentinho ganha o apelido pela postura reservada na velhice.',
-                        conteudoEn:
-                            '"Casmurro" means stubborn, taciturn. Bentinho earns the nickname for his reserved demeanor in old age.',
-                    },
-                ],
-            },
-            dicasVestibular: {
-                create: [
-                    {
-                        tituloPt: 'Narrador em 1ª Pessoa',
-                        tituloEn: 'First-Person Narrator',
-                        conteudoPt:
-                            'Lembre-se: Bentinho narra os fatos anos depois, com subjetividade. A "verdade" é relativa.',
-                        conteudoEn:
-                            'Remember: Bentinho narrates events years later, with subjectivity. The "truth" is relative.',
-                    },
-                ],
-            },
-            simulados: {
-                create: [
-                    {
-                        tituloPt: 'Simulado Dom Casmurro - Vestibular',
-                        tituloEn: 'Dom Casmurro Quiz - College Entrance Exam',
-                        questoes: {
-                            create: [
-                                {
-                                    perguntaPt:
-                                        'Qual recurso narrativo é central para a ambiguidade em Dom Casmurro?',
-                                    perguntaEn:
-                                        'Which narrative device is central to the ambiguity in Dom Casmurro?',
-                                    respostaCorretaPt: 'Narrador em primeira pessoa não confiável',
-                                    respostaCorretaEn: 'Unreliable first-person narrator',
-                                    explicacaoPt:
-                                        'Bentinho controla a narrativa, omitindo e distorcendo fatos, o que gera dúvida sobre a traição de Capitu.',
-                                    explicacaoEn:
-                                        "Bentinho controls the narrative, omitting and distorting facts, which casts doubt on Capitu's alleged betrayal.",
-                                    alternativas: {
-                                        create: [
-                                            {
-                                                textoPt:
-                                                    'Narrador em primeira pessoa não confiável',
-                                                textoEn: 'Unreliable first-person narrator',
-                                            },
-                                            {
-                                                textoPt: 'Narrador onisciente neutro',
-                                                textoEn: 'Neutral omniscient narrator',
-                                            },
-                                            {
-                                                textoPt: 'Múltiplos narradores em terceira pessoa',
-                                                textoEn: 'Multiple third-person narrators',
-                                            },
-                                            {
-                                                textoPt: 'Diário íntimo com datas cronológicas',
-                                                textoEn: 'Intimate diary with chronological dates',
-                                            },
-                                        ],
-                                    },
-                                },
-                            ],
-                        },
-                    },
-                ],
-            },
-        },
-    });
+      descricaoPT:
+        'Diário real de Carolina Maria de Jesus que relata o dia a dia de uma favelada no Canindé (São Paulo), com fome, pobreza extrema, luta pela sobrevivência e críticas sociais fortes. Um dos documentos mais importantes da literatura brasileira do século XX.',
+      descricaoEN:
+        'Real diary of Carolina Maria de Jesus that reports the daily life of a favela resident in Canindé (São Paulo), with hunger, extreme poverty, struggle for survival and strong social criticism. One of the most important documents in 20th century Brazilian literature.',
 
-    // 👥 Equipe de Desenvolvimento
+      personagens: [
+        'Carolina Maria de Jesus',
+        'Vera Eunice',
+        'João José',
+        'José Carlos',
+        'Manoel (vendeiro)',
+        'Antônio Lira (peixeiro)',
+        'Alfredo (eletricista)',
+        'Orlando',
+        'Arnaldo',
+        'Seu Eduardo',
+        'Raimundo',
+        'Luiz',
+      ],
+
+      fotoPersonagens: [],
+      fotosCuriosidades: [],
+
+      descricaoPersonagensPT:
+        'Carolina é mãe solo, catadora de papel e escritora. Vera Eunice é a filha caçula, símbolo de esperança. João José é o filho mais velho, que enfrenta os perigos da favela. José Carlos representa a inocência infantil em meio à miséria. Os demais são vizinhos e comerciantes que fazem parte do cotidiano da autora.',
+      descricaoPersonagensEN:
+        "Carolina is a single mother, paper picker and writer. Vera Eunice is the youngest daughter, a symbol of hope. João José is the oldest son, facing the dangers of the favela. José Carlos represents childhood innocence amid misery. The others are neighbors and merchants who are part of the author's daily life.",
+
+      contextoHistoricoPT:
+        'Brasil dos anos 1950-1960, período de grande crescimento econômico (desenvolvimentismo) mas também de profunda desigualdade social. A favela do Canindé, em São Paulo, era símbolo da exclusão urbana. O livro foi publicado em 1960, com prefácio de Audálio Dantas, e se tornou fenômeno editorial.',
+      contextoHistoricoEN:
+        'Brazil in the 1950s-1960s, a period of great economic growth (developmentalism) but also deep social inequality. The Canindé favela in São Paulo was a symbol of urban exclusion. The book was published in 1960, with a preface by Audálio Dantas, and became a publishing phenomenon.',
+
+      analisePT:
+        'Obra-prima da literatura testemunhal brasileira. Carolina escreve com linguagem direta, sem artifícios, transformando o diário em arma de denúncia social. O título "Quarto de Despejo" é uma metáfora poderosa: a favela é o lugar onde a cidade joga o que não quer mais. O livro antecipou debates sobre desigualdade, racismo, direitos da mulher negra e o direito à cidade que ainda estão em discussão hoje.',
+      analiseEN:
+        'Masterpiece of Brazilian testimonial literature. Carolina writes with direct language, without artifice, transforming the diary into a weapon of social denunciation. The title "Quarto de Despejo" (Dump Room) is a powerful metaphor: the favela is where the city throws what it no longer wants. The book anticipated debates on inequality, racism, Black women\'s rights and the right to the city that are still being discussed today.',
+
+      reviews: {
+        create: [
+          {
+            autor: 'Prof. Audálio Dantas',
+            comentarioPt:
+              'Um dos documentos humanos mais importantes já escritos no Brasil. Carolina tem o dom de transformar miséria em literatura de alto nível.',
+            comentarioEn:
+              'One of the most important human documents ever written in Brazil. Carolina has the gift of turning misery into high-level literature.',
+            avaliacao: 5,
+          },
+          {
+            autor: 'Estudante de Vestibular',
+            comentarioPt:
+              'Leitura obrigatória para entender o Brasil real. A força da narrativa está na autenticidade da voz de quem viveu a história.',
+            comentarioEn:
+              'Mandatory reading to understand the real Brazil. The strength of the narrative lies in the authenticity of the voice of someone who lived the story.',
+            avaliacao: 5,
+          },
+        ],
+      },
+
+      videoAulas: {
+        create: [
+          {
+            tituloPt: 'Quarto de Despejo: Literatura como Denúncia Social',
+            tituloEn: 'Quarto de Despejo: Literature as Social Denunciation',
+            urlMidia: 'https://www.youtube.com/watch?v=exemplo-quarto-despejo',
+            descricaoPt:
+              'Análise da obra como literatura testemunhal e sua importância para o debate sobre desigualdade no Brasil.',
+            descricaoEn:
+              'Analysis of the work as testimonial literature and its importance for the debate on inequality in Brazil.',
+          },
+          {
+            tituloPt:
+              'Carolina Maria de Jesus: A voz que o Brasil não queria ouvir',
+            tituloEn:
+              'Carolina Maria de Jesus: The Voice Brazil Did Not Want to Hear',
+            urlMidia: 'https://www.youtube.com/watch?v=exemplo-carolina',
+            descricaoPt:
+              'Contexto histórico da publicação e o impacto do livro na sociedade brasileira dos anos 1960.',
+            descricaoEn:
+              "Historical context of the publication and the book's impact on Brazilian society in the 1960s.",
+          },
+        ],
+      },
+
+      curiosidades: {
+        create: [
+          {
+            tituloPt: 'O título "Quarto de Despejo"',
+            tituloEn: 'The Title "Quarto de Despejo"',
+            conteudoPt:
+              'Carolina criou o título para representar a favela como o lugar onde a cidade "joga fora" os pobres, como se fossem objetos velhos e indesejados. É uma das metáforas mais poderosas da literatura brasileira.',
+            conteudoEn:
+              'Carolina created the title to represent the favela as the place where the city "throws away" the poor, as if they were old and unwanted objects. It is one of the most powerful metaphors in Brazilian literature.',
+          },
+          {
+            tituloPt: 'O sucesso editorial inesperado',
+            tituloEn: 'The Unexpected Publishing Success',
+            conteudoPt:
+              'O livro vendeu mais de 100 mil exemplares em poucos meses após o lançamento em 1960. Carolina, que era analfabeta funcional até os 30 anos, se tornou uma das escritoras mais lidas do Brasil na época.',
+            conteudoEn:
+              'The book sold over 100,000 copies in just a few months after its release in 1960. Carolina, who was functionally illiterate until she was 30, became one of the most widely read writers in Brazil at the time.',
+          },
+          {
+            tituloPt: 'A verdadeira Carolina',
+            tituloEn: 'The Real Carolina',
+            conteudoPt:
+              'Após o sucesso do livro, Carolina foi explorada comercialmente e caiu no esquecimento. Morreu em 1977 na pobreza, quase na mesma condição que descreveu no diário. Hoje é reconhecida como uma das maiores escritoras brasileiras do século XX.',
+            conteudoEn:
+              "After the book's success, Carolina was commercially exploited and fell into oblivion. She died in 1977 in poverty, almost in the same condition she described in the diary. Today she is recognized as one of the greatest Brazilian writers of the 20th century.",
+          },
+        ],
+      },
+
+    
+      dicasVestibular: {
+        create: [
+          {
+            tituloPt: 'Literatura Testemunhal',
+            tituloEn: 'Testimonial Literature',
+            conteudoPt:
+              'Quarto de Despejo é um dos maiores exemplos de literatura testemunhal do Brasil. Diferente da ficção, aqui quem narra viveu a história. Isso dá ao texto uma força e autenticidade únicas.',
+            conteudoEn:
+              'Quarto de Despejo is one of the greatest examples of testimonial literature in Brazil. Unlike fiction, here the narrator lived the story. This gives the text a unique strength and authenticity.',
+          },
+          {
+            tituloPt: 'Narrador Protagonista',
+            tituloEn: 'Protagonist Narrator',
+            conteudoPt:
+              'Carolina é ao mesmo tempo autora, narradora e protagonista. Isso cria uma relação direta entre quem escreve e o que é escrito. Não há mediação — a voz é dela.',
+            conteudoEn:
+              'Carolina is at the same time author, narrator and protagonist. This creates a direct relationship between who writes and what is written. There is no mediation — the voice is hers.',
+          },
+          {
+            tituloPt: 'Crítica Social e Política',
+            tituloEn: 'Social and Political Criticism',
+            conteudoPt:
+              'O livro não é apenas relato de miséria. Carolina faz crítica direta aos governantes, à mídia, ao racismo e à exploração dos pobres. Ela entende que a fome não é "natural" — é resultado de escolhas políticas.',
+            conteudoEn:
+              'The book is not just a report of misery. Carolina makes direct criticism of rulers, the media, racism and the exploitation of the poor. She understands that hunger is not "natural" — it is the result of political choices.',
+          },
+          {
+            tituloPt: 'A favela como espaço político',
+            tituloEn: 'The Favela as a Political Space',
+            conteudoPt:
+              'Para Carolina, a favela não é apenas um lugar de pobreza. É um espaço de resistência, de organização e de consciência política. Ela mostra que os pobres pensam, refletem e têm voz.',
+            conteudoEn:
+              'For Carolina, the favela is not just a place of poverty. It is a space of resistance, organization and political awareness. She shows that the poor think, reflect and have a voice.',
+          },
+        ],
+      },
+
+      
+      simulados: {
+        create: [
+          {
+            tituloPt: 'Simulado Quarto de Despejo - Vestibular',
+            tituloEn: 'Quarto de Despejo Quiz - College Entrance Exam',
+            questoes: {
+              create: [
+                {
+                  perguntaPt:
+                    'Sobre a obra Quarto de Despejo, é correto afirmar:',
+                  perguntaEn:
+                    'About the work Quarto de Despejo, it is correct to state:',
+                  respostaCorretaPt:
+                    'Trata-se de um diário real, onde Carolina registra sua vida, lutas, fome, trabalho e visão crítica da sociedade.',
+                  respostaCorretaEn:
+                    'It is a real diary, where Carolina records her life, struggles, hunger, work and critical view of society.',
+                  explicacaoPt:
+                    'Quarto de Despejo é um diário real escrito por Carolina Maria de Jesus entre 1955 e 1960. Não é ficção, mas testemunho vivo da realidade da favela.',
+                  explicacaoEn:
+                    'Quarto de Despejo is a real diary written by Carolina Maria de Jesus between 1955 and 1960. It is not fiction, but a living testimony of favela reality.',
+                  alternativas: {
+                    create: [
+                      {
+                        textoPt:
+                          'É um romance fictício, baseado em histórias ouvidas pela autora.',
+                        textoEn:
+                          'It is a fictional novel, based on stories heard by the author.',
+                      },
+                      {
+                        textoPt:
+                          'Trata-se de um diário real, onde Carolina registra sua vida, lutas, fome, trabalho e visão crítica da sociedade.',
+                        textoEn:
+                          'It is a real diary, where Carolina records her life, struggles, hunger, work and critical view of society.',
+                      },
+                      {
+                        textoPt:
+                          'Tem como tema principal a relação amorosa e a família tradicional.',
+                        textoEn:
+                          'Its main theme is the love relationship and the traditional family.',
+                      },
+                      {
+                        textoPt:
+                          'Apresenta uma visão otimista, mostrando que todos conseguem sair da miséria com esforço.',
+                        textoEn:
+                          'It presents an optimistic view, showing that everyone can escape poverty through effort.',
+                      },
+                    ],
+                  },
+                },
+                {
+                  perguntaPt:
+                    'Para Carolina, o domínio da escrita representa principalmente:',
+                  perguntaEn:
+                    'For Carolina, mastery of writing represents mainly:',
+                  respostaCorretaPt:
+                    'uma ferramenta de empoderamento, que permite romper o silêncio e dar visibilidade à sua realidade.',
+                  respostaCorretaEn:
+                    'a tool of empowerment, which allows breaking the silence and giving visibility to her reality.',
+                  explicacaoPt:
+                    'Carolina via a escrita como a única forma de fazer sua voz ser ouvida. Ela transformou o diário em instrumento de denúncia e resistência.',
+                  explicacaoEn:
+                    'Carolina saw writing as the only way to make her voice heard. She transformed the diary into an instrument of denunciation and resistance.',
+                  alternativas: {
+                    create: [
+                      {
+                        textoPt:
+                          'um motivo de vergonha, pois ela considera que escreve mal.',
+                        textoEn:
+                          'a reason for shame, as she considers that she writes poorly.',
+                      },
+                      {
+                        textoPt:
+                          'um luxo desnecessário para quem precisa trabalhar tanto.',
+                        textoEn:
+                          'an unnecessary luxury for someone who needs to work so much.',
+                      },
+                      {
+                        textoPt:
+                          'uma ferramenta de empoderamento, que permite romper o silêncio e dar visibilidade à sua realidade.',
+                        textoEn:
+                          'a tool of empowerment, which allows breaking the silence and giving visibility to her reality.',
+                      },
+                      {
+                        textoPt:
+                          'uma forma de se diferenciar e se afastar dos outros moradores.',
+                        textoEn:
+                          'a way to differentiate herself and distance herself from other residents.',
+                      },
+                    ],
+                  },
+                },
+                {
+                  perguntaPt:
+                    'Por que Quarto de Despejo é considerada uma obra fundamental para a história e literatura do Brasil?',
+                  perguntaEn:
+                    'Why is Quarto de Despejo considered a fundamental work for Brazilian history and literature?',
+                  respostaCorretaPt:
+                    'Por ser o primeiro relato feito por alguém que vivia na periferia, contando a própria história com a sua voz, denunciando realidades até então invisíveis.',
+                  respostaCorretaEn:
+                    'Because it is the first account made by someone who lived in the periphery, telling their own story with their own voice, denouncing realities that were previously invisible.',
+                  explicacaoPt:
+                    'Antes de Carolina, a favela era falada por outros (jornalistas, sociólogos, romancistas). Ela foi a primeira a falar de dentro, com a própria voz e autoridade de quem viveu.',
+                  explicacaoEn:
+                    'Before Carolina, the favela was spoken about by others (journalists, sociologists, novelists). She was the first to speak from within, with her own voice and the authority of someone who lived it.',
+                  alternativas: {
+                    create: [
+                      {
+                        textoPt:
+                          'Por ser o primeiro livro escrito por uma mulher negra no Brasil.',
+                        textoEn:
+                          'Because it is the first book written by a Black woman in Brazil.',
+                      },
+                      {
+                        textoPt:
+                          'Por ser o primeiro relato feito por alguém que vivia na periferia, contando a própria história com a sua voz, denunciando realidades até então invisíveis.',
+                        textoEn:
+                          'Because it is the first account made by someone who lived in the periphery, telling their own story with their own voice, denouncing realities that were previously invisible.',
+                      },
+                      {
+                        textoPt:
+                          'Por ser o livro mais vendido do século XX no Brasil.',
+                        textoEn:
+                          'Because it was the best-selling book of the 20th century in Brazil.',
+                      },
+                      {
+                        textoPt:
+                          'Por ter mudado imediatamente as leis de moradia.',
+                        textoEn: 'Because it immediately changed housing laws.',
+                      },
+                    ],
+                  },
+                },
+                {
+                  perguntaPt:
+                    'Em Quarto de Despejo, Carolina aborda diversas questões sociais. Identifique a alternativa que NÃO corresponde aos temas centrais da obra:',
+                  perguntaEn:
+                    'In Quarto de Despejo, Carolina addresses several social issues. Identify the alternative that does NOT correspond to the central themes of the work:',
+                  respostaCorretaPt:
+                    'Descrição detalhada de festas, tradições e folguedos da cultura brasileira.',
+                  respostaCorretaEn:
+                    'Detailed description of parties, traditions and Brazilian cultural festivities.',
+                  explicacaoPt:
+                    'A obra foca na fome, miséria, racismo, exploração e abandono do poder público. Não há espaço para romantização ou folclorização da pobreza.',
+                  explicacaoEn:
+                    'The work focuses on hunger, misery, racism, exploitation and abandonment by public power. There is no room for romanticization or folklorization of poverty.',
+                  alternativas: {
+                    create: [
+                      {
+                        textoPt: 'Fome, miséria e falta de moradia digna.',
+                        textoEn:
+                          'Hunger, misery and lack of dignified housing.',
+                      },
+                      {
+                        textoPt:
+                          'Relações de poder, política e promessas não cumpridas pelos governantes.',
+                        textoEn:
+                          'Power relations, politics and unfulfilled promises by rulers.',
+                      },
+                      {
+                        textoPt:
+                          'Discriminação racial e condição da mulher negra e pobre.',
+                        textoEn:
+                          'Racial discrimination and the condition of poor Black women.',
+                      },
+                      {
+                        textoPt:
+                          'Descrição detalhada de festas, tradições e folguedos da cultura brasileira.',
+                        textoEn:
+                          'Detailed description of parties, traditions and Brazilian cultural festivities.',
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  })
+
+  console.log('✅ Livro inserido com sucesso!')
+
+  console.log('👥 Inserindo equipe...')
+
+  const equipeMembros = [
+    { nome: 'Jennifer', curso: 'Desenvolvimento de Sistemas' },
+    { nome: 'Maria Clara', curso: 'Desenvolvimento de Sistemas' },
+    { nome: 'Kaike', curso: 'Desenvolvimento de Sistemas' },
+    { nome: 'Maria Eduarda', curso: 'Desenvolvimento de Sistemas' },
+    { nome: 'Manuela Caetano', curso: 'Desenvolvimento de Sistemas' },
+    { nome: 'Douglas Santos', curso: 'Mecânica' },
+    { nome: 'Julia Martins', curso: 'Mecânica' },
+    { nome: 'Laura', curso: 'Desenvolvimento de Sistemas' },
+    { nome: 'Lorenzo Lange', curso: 'Mecânica' },
+    { nome: 'Nicole', curso: 'Elétrica' },
+    { nome: 'Sophia Augusto Bandoni', curso: 'Elétrica' },
+    { nome: 'Yasmin Gonçalves', curso: 'Elétrica' },
+    { nome: 'Thales', curso: 'Desenvolvimento de Sistemas' },
+    { nome: 'Maria Fernanda', curso: 'Mecânica' },
+  ]
+
+  for (const membro of equipeMembros) {
     await prisma.equipe.create({
-        data: {
-            nome: 'Equipe de Desenvolvimento',
-            curso: 'Tecnologia em Sistemas para Internet',
-            objetivoPt:
-                'Democratizar o acesso à análise literária de qualidade, unindo tecnologia e educação para preparar estudantes para vestibulares e ENEM.',
-            objetivoEn:
-                'Democratize access to quality literary analysis, combining technology and education to prepare students for college entrance exams.',
-            fotoEquipe: [
-                'https://lh3.googleusercontent.com/chat_attachment/AP1Ws4tbcK-lYuDQM5fe7XyCB_x0ckDtrcSwuzQUo4W9Dawuky_7xhyH-rIWkj_LbHqERPoxxR5CugiaWa6uxsNd0Akkxyi1nQ73TXElBP8ttC8mnf8MopLd42ZtZeTyaruJU37D5yXOeaWDYxKxeJjngba0uy2Zakiclchxk-5IXK9KSEgV3rvcmywTUOADdYyiLLwnallVorIhvh8VyA3k7yk1qB88P_IYj84MiSqnifMh0MXQePYcyG-JYP3IdY24S0R7GMi2mRpyI458pv3kfaKaAGPnjX9qmHEu-HPDEJZM0WCrQdCiVwjLzRggXlUb6RQ=w1872-h970-rw',
-                'https://lh3.googleusercontent.com/chat_attachment/AP1Ws4toZBe53Xs0nmNJjBgDQdsghaYyrj9psCLJGFXvYNQNOStMPLpOLIzT6LezH-a6sbUNF-5DAvZPwjQRji5xiZeaHPaHJsT_VOhl-cKeesEfYQpjwNy8XlUAM4BoMwzQcEJmllzMRZEONgOtChEM7eJovWV5LffFEwTdle_VEdN83L8k5T79P8jFXC4OxP5g-uKcc0uJiVPVLG4iUADuslmqaS4HbJRpsYH_bXAUeQAKgDyrPCWB0n1A-reCkMvbEGiaiFmoJj7tgU5X9xblvmPF38yIKI72E4dc8PhRqHiQQPDmmHEZlBq0dtmeck8c00Y=w1872-h970-rw',
-                'https://lh3.googleusercontent.com/chat_attachment/AP1Ws4tEjzH2oWm0cl1n5CEXr_6uL_FB-sihgiMiCpMjHLncYuLpW5QlsNz-5_cLiZ9FCsO32e3zlXrzh0verJ6-VOV2nbnhJVnBJ3zVBaRF5FpTYrKnpA1V7-1MtyV_EhhOhehnk09mkZOSDHJWLrUXqLpd9GixVb4PZ8bXjWL5ebgQMAOOBGPwyCTOnXgNtLKhk1JCWY5Ob96F1Qpq_d4nSFL5WFOK-78VZ4a1EYn0wytsyZcntzmwZcveu3wWi-uTdTpaeghxRTEKwtAt-7F7rpbQSWrvwrV-3fozh9JHFSOMYWhV-xakDFrB2N6UPme20eg=w1872-h970-rw',
-                'https://lh3.googleusercontent.com/chat_attachment/AP1Ws4stBs0Dur8uK2GeRMMCDIicjZBdI8w0lZ2WUfnLl9hu7l4d9R9bj7MQVDAEEvBGXB2Pvc7GdyNBhGX_29kWsHMjoyp6UOWXkE8GWJqrOEkgNzjI4Qvj7RVZOEiweQhDMv8dwsrGDRmcCjm7vva7ZklJXFHCYFKcKYSPqf1-C0kvbBn2tfWjhJFCuhuChQO2jUFn6b8vGIXe7EtohPKfuIm5r69bcDzLz1ck3-fDot1YJJ8CtphfuUEaG2_EPU42vtnmT5iaIvrFz3rbZVzi2Q9lsl_2zw6caL7rQzIE-k9PuwiTgt-qPx-0lNQVXtqkkAg=w1872-h970-rw',
-                'https://lh3.googleusercontent.com/chat_attachment/AP1Ws4vDyGdae2MmUhjzuIFa-I_7ATgLjE1nLIDHdY6tVLxYOJFr1nTYYNNI8mTLH4vriImKUH88NrU1nXv3skwAjQ0Hf1Mpj-LSj9jX4ydn9ftmpzSwaXo5hEOazsBCGg7sOqEt8jGTcN7aFPtmnvDt1BoTAJ-xa4cQ33HaPIGeKAHO1TV52IxooxI8FK8EMTWOI4npaav3BX9tLh1-tF2Mr1-IHyp1M4H4ejUqt96YCAR5Hd1GgixrLX3DmhgbxZJ-7Fcvb93KhICoG_EZcMjlMyZWXlpqcCbGzv-DnMGEL9052jtHgKurvvvYL02j7dzVQHo=w1872-h970-rw',
-                'https://lh3.googleusercontent.com/chat_attachment/AP1Ws4uxD8yzh3lnuOBfg8VsWHDv-aXVcjgk4n_74G3EBeqXSGvlKjcOey9jVq6TCqHwcy9-wfqWfW6cahnZd0DNLrC0YVUhhe-KsXt5rJpDdUU_ATxDx0kWCcjZbSpwEY-9BHYhWzeZzQ4eivzvQcjyUES23gNVAWMybQQMVcnTf0_mtgVuTmS6zRQ9zcc3A6YkqG6H6zKDt7ie_ktR-W_wOQDEOzr6yvz4FvPEuVJ-n1x7u-UrN5hKXoTzg1PFUs8PFLbaj7h53-iwgDApBHlRG7TbLOxzDG650PNUxPkfM7DanzAnzvyAEsXd_9XZRfxh8hs=w1872-h970-rw',
-                'https://lh3.googleusercontent.com/chat_attachment/AP1Ws4see_tqRt8m5sY2abBS1FtqMOOdDyuoVJgWxvs9zx-iIAgOHMQm21r6zNSeY3sBShXfFlT-ZA56wFlVkdc6-WEo3i1PBxRPlRLzc794l-c1AxwyE60p47PdCtN-kGHwbVKY4bHY4sajJ2gTdBBe53iXwe10L6HjFCAZmJhPtU8IpwLaQFQQ9_ZwduA0tLDGOPFSmXGFF_f_vNcit-6ZXZkaWKeqBNlAbTehW-zT5ANlcZd_HFX3aEP_PnEeFoCOpCMkKnhOeL5yXGTfVeohv7Si-Inuc8Rh6QuKWXl_Sf258N4ZulAqf6QSIZfOoHbc8wY=w1872-h970-rw',
-                'https://lh3.googleusercontent.com/chat_attachment/AP1Ws4uzrBq3E0jy4GlbWqbelWoNnEpAlvhicEaPQP73HPpmHPZ_zEB3GMeCBNJIu_dV207wNWEJmBhsJ4bjV9cWwY6WL85IJTdmKlQ9srr9wvDwYFJDNs6A69bR93LQ-08I_rMu6HiKCSRwcPx5mD01eLjgz-_VAQkrcO56qjzmYtQM2v_JBoooUuwFSy0Civa6rqSb9WkFLpRkzkHdGxnRTpBvRnKajxRsXtKhHK0fCO2Qy5yJIJfyntxQinWCiN_haFBwcehL-nT-NIjee2N08PIevTUJZDP6LpdMD8cNM2TR9_p9YXbhmtloXI0ADp2-xBU=w1872-h970-rw',
-                'https://lh3.googleusercontent.com/chat_attachment/AP1Ws4vwp9n7rJ7gJMDW-J6jhLRojfBhLbpD8VYmvu0wBPkAh-A8G_wy-7ipMKPoZ7YAY06hMo3fF0INwhxL4xO33BuEP_SBCbgaAVO_f8nBaB0xF_zfQuiaa0gOaO66o7KZNImg4-fZ6ZXDJoxfK8dugrDpJWWJsnO5ywwChmY2ygWS33ec0Qzob_hPv7VzV3o9V8TOc5nsyJbTn8cvn9wjU3htQtKuhYyz8aSJPwrUeaHcT1AOurAXeztUY9QQUzCk_Okvzao-auXvK0_2c-DNQcN6mxdf0QShVyBOJ_6SYhgQuFx3ndjLad6RDiZsVRXaY10=w1872-h970-rw',
-                'https://lh3.googleusercontent.com/chat_attachment/AP1Ws4v1QAPldE2RIFewX5BDkesbO_8qiHk0E2o2V0vDtxQN7TeqhYvnci1NEbQgpV5JZyeXUczMWsB9aNOlIkmO4VMeIa7wGbDz0ZKLpiuN3QVjWDdXx5BRrXJQNi_1M0_Tl6ceJk17J-yK8LHawF7Ty9jev4kQpKvaF3uYw9o3-pWJ79mBtqnWhxAimcCazdlWSgXGmmyR_H2V9bVPdomFSNVK_ZIjz8Ugv7efAFV2rzR8l3SzF1S6txWm1HwTQHQhVf1q33fG1t6HbvK3IaW2O1k_REplTViwqJ3tmJqYUORlzHHa6yZjEhEvfUIp_3tbMvY=w1872-h970-rw',
-            ],
-        },
-    });
+      data: {
+        nome: membro.nome,
+        curso: membro.curso,
+        objetivoPt:
+          'Desenvolver um projeto integrador que una literatura, tecnologia e educação para ajudar estudantes a se prepararem para vestibulares e ENEM.',
+        objetivoEn:
+          'Develop an integrative project that combines literature, technology and education to help students prepare for college entrance exams and ENEM.',
+        fotoEquipe: [],
+      },
+    })
+  }
 
-    console.log('✅ Seed concluído com sucesso!');
-    console.log(`📚 Livros inseridos: 1`);
-    console.log(`👥 Equipe inserida: 1`);
+  console.log(`✅ ${equipeMembros.length} membros da equipe inseridos!`)
+  console.log('🎉 Seed concluído com sucesso!')
 }
 
 main()
-    .catch((e) => {
-        console.error('❌ Erro no seed:', e);
-        process.exit(1);
-    })
-    .finally(async () => {
-        await prisma.$disconnect();
-        await pool.end();
-        console.log('🔌 Conexões encerradas.');
-    });
+  .catch(e => {
+    console.error('❌ Erro no seed:', e)
+    process.exit(1)
+  })
+  .finally(async () => {
+    await prisma.$disconnect()
+    await pool.end()
+  })
