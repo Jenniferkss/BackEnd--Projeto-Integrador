@@ -1,50 +1,114 @@
 const fontesBiblioteca = [
-    {
-        id: 'capitaes_arena',
-        nomeLivro: 'Capitães da Areia',
-        urlCompleta:
-            process.env.URL_LIVRO_CAPITAES_DA_AREIA ||
-            'https://readflow-m8o6.onrender.com/api/livros',
-        apiKey: process.env.API_KEY_CAPITAES_DA_AREIA,
-        requerApiKey: true,
-        authType: 'header',
-        authHeaderName: 'x-api-key',
-        timeoutMs: 8000,
-    },
-    {
-        id: 'o_guarani',
-        nomeLivro: 'O Guarani',
-        urlCompleta:
-            process.env.URL_LIVRO_O_GUARANI || 'https://bookpedia-backend-4ab3.onrender.com/livros',
-        apiKey: process.env.API_KEY_O_GUARANI,
-        requerApiKey: true,
-        authType: 'header',
-        authHeaderName: 'x-api-key',
-        timeoutMs: 8000,
-    },
-    {
-        id: 'quartos_despejo',
-        nomeLivro: 'Quarto de Despejo',
-        urlCompleta:
-            process.env.URL_LIVRO_QUARTOS_DESPEJO ||
-            'https://backend-projeto-integrador-rana.onrender.com/api/livro',
-        apiKey: null,
-        requerApiKey: false,
-        authType: 'header',
-        authHeaderName: 'x-api-key',
-        timeoutMs: 8000,
-    },
-    {
-        id: 'memorias_bras_cubas',
-        nomeLivro: 'Memórias Póstumas de Brás Cubas',
-        urlCompleta: process.env.URL_LIVRO_MEMORIAS || 'https://projeto-clubyx.onrender.com/livros',
-        apiKey: process.env.API_KEY_MEMORIAS,
-        requerApiKey: true,
-        authType: 'header',
-        authHeaderName: 'x-api-key',
-        timeoutMs: 8000,
-    },
-];
+  //  Fontes do 2TDS2
+  {
+    id: 'capitaes_arena',
+    nomeLivro: 'Capitães da Areia',
+    urlCompleta:
+      process.env.URL_LIVRO_CAPITAES_DA_AREIA ||
+      'https://readflow-m8o6.onrender.com/api/livros',
+    apiKey: process.env.API_KEY_CAPITAES_DA_AREIA,
+    requerApiKey: true,
+    authType: 'header',
+    authHeaderName: 'x-api-key',
+    timeoutMs: 8000,
+  },
+  {
+    id: 'o_guarani',
+    nomeLivro: 'O Guarani',
+    urlCompleta:
+      process.env.URL_LIVRO_O_GUARANI ||
+      'https://bookpedia-backend-4ab3.onrender.com/livros',
+    apiKey: process.env.API_KEY_O_GUARANI,
+    requerApiKey: true,
+    authType: 'header',
+    authHeaderName: 'x-api-key',
+    timeoutMs: 8000,
+  },
+  {
+    id: 'quartos_despejo',
+    nomeLivro: 'Quarto de Despejo',
+    urlCompleta:
+      process.env.URL_LIVRO_QUARTOS_DESPEJO ||
+      'https://backend-projeto-integrador-rana.onrender.com/api/livro',
+    apiKey: null,
+    requerApiKey: false,
+    authType: 'header',
+    authHeaderName: 'x-api-key',
+    timeoutMs: 8000,
+  },
+  {
+    id: 'memorias_bras_cubas',
+    nomeLivro: 'Memórias Póstumas de Brás Cubas',
+    urlCompleta:
+      process.env.URL_LIVRO_MEMORIAS ||
+      'https://projeto-clubyx.onrender.com/livros',
+    apiKey: process.env.API_KEY_MEMORIAS,
+    requerApiKey: true,
+    authType: 'header',
+    authHeaderName: 'x-api-key',
+    timeoutMs: 8000,
+  }, //  Fontes do 2TDS1
+  {
+    id: 'atividade_portugues',
+    nomeLivro: 'Atividade Português',
+    urlCompleta:
+      process.env.URL_LIVRO_ATIVIDADE_PORTUGUES ||
+      'https://atividade-portugues-backend.onrender.com/api/livro',
+    apiKey: process.env.API_KEY_ATIVIDADE_PORTUGUES,
+    requerApiKey: true,
+    authType: 'header',
+    authHeaderName: 'x-api-key',
+    timeoutMs: 8000,
+  },
+  {
+    id: 'ratsjs',
+    nomeLivro: 'RatsJS',
+    urlCompleta:
+      process.env.URL_LIVRO_RATSJS || 'https://ratsjs.onrender.com/api/livros',
+    apiKey: process.env.API_KEY_RATSJS,
+    requerApiKey: true,
+    authType: 'header',
+    authHeaderName: 'x-api-key',
+    timeoutMs: 8000,
+  },
+  {
+    id: 'clube_livro',
+    nomeLivro: 'Clube do Livro',
+    urlCompleta:
+      process.env.URL_LIVRO_CLUBE_LIVRO ||
+      'https://clubelivro-backend.onrender.com/api/livros',
+    apiKey: process.env.API_KEY_CLUBE_LIVRO,
+    requerApiKey: true,
+    authType: 'header',
+    authHeaderName: 'x-api-key',
+    timeoutMs: 8000,
+  },
+  {
+    id: 'olhos_dagua',
+    nomeLivro: "Olhos d'Água",
+    urlCompleta:
+      process.env.URL_LIVRO_OLHOS_DAGUA ||
+      'https://olhosdagua.onrender.com/api/livro',
+    apiKey: process.env.API_KEY_OLHOS_DAGUA,
+    requerApiKey: true,
+    authType: 'header',
+    authHeaderName: 'x-api-key',
+    timeoutMs: 8000,
+  },
+  {
+    id: 'devstones',
+    nomeLivro: 'DevStones',
+    urlCompleta:
+      process.env.URL_LIVRO_DEVSTONES ||
+      'https://devstones-backend.onrender.com/api/livro/',
+    apiKey: process.env.API_KEY_DEVSTONES,
+    requerApiKey: true,
+    authType: 'header',
+    authHeaderName: 'x-api-key',
+    timeoutMs: 8000,
+  },
+]
+
 
 const normalizarLista = (valor) => {
     if (Array.isArray(valor)) {
