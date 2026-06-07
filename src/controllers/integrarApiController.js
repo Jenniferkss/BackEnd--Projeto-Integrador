@@ -18,7 +18,7 @@ const fontesBiblioteca = [
     urlCompleta:
       process.env.URL_LIVRO_O_GUARANI ||
       'https://bookpedia-backend-4ab3.onrender.com/livros',
-    apiKey: process.env.API_KEY_O_GUARANI,
+    apiKey: process.env.API_KEY_O_GUARANI || 'bookpedia-backend-2026',
     requerApiKey: true,
     authType: 'header',
     authHeaderName: 'x-api-key',
@@ -29,7 +29,7 @@ const fontesBiblioteca = [
     nomeLivro: 'Quarto de Despejo',
     urlCompleta:
       process.env.URL_LIVRO_QUARTOS_DESPEJO ||
-      'https://backend-projeto-integrador-rana.onrender.com/api/livro',
+      'https://backend-projeto-integrador-rana.onrender.com/api/livro/6',
     apiKey: null,
     requerApiKey: false,
     authType: 'header',
@@ -129,6 +129,10 @@ const extrairListaResposta = (payload) => {
     const chavesPossiveis = ['data', 'dados', 'livros', 'results', 'conteudo', 'itens', 'books'];
     for (const chave of chavesPossiveis) {
         if (Array.isArray(payload[chave])) return payload[chave];
+        const val = payload[chave];
+        if (val && typeof val === 'object' && !Array.isArray(val) && val.id !== undefined) {
+            return [val];
+        }
     }
     return [];
 };
@@ -154,6 +158,7 @@ const normalizarLivro = (item) => ({
             'tituloPt',
             'titulo_pt',
             'titulo',
+            'tituloDoLivro',
             'title',
             'nome',
             'nomeLivro',
@@ -168,20 +173,30 @@ const normalizarLivro = (item) => ({
     titulo_en: pegarPrimeiroValor(item, ['tituloEN', 'tituloEn', 'titulo_en', 'titulo'], ''),
     tituloEn: pegarPrimeiroValor(item, ['tituloEN', 'tituloEn', 'titulo_en', 'titulo'], ''),
     tituloEN: pegarPrimeiroValor(item, ['tituloEN', 'tituloEn', 'titulo_en', 'titulo'], ''),
-    autor: pegarPrimeiroValor(item, ['autor', 'author', 'nomeAutor'], 'Autor não informado'),
+    autor: (() => {
+        const raw = pegarPrimeiroValor(item, ['autor', 'author', 'nomeAutor', 'autores'], null);
+        if (Array.isArray(raw)) {
+            const primeiro = raw[0];
+            if (typeof primeiro === 'object' && primeiro !== null) {
+                return primeiro.nome || primeiro.name || 'Autor não informado';
+            }
+            return String(primeiro || 'Autor não informado');
+        }
+        return raw || 'Autor não informado';
+    })(),
     capa_url: pegarPrimeiroValor(
         item,
-        ['capaURl', 'capaUrl', 'capa', 'image', 'cover', 'url_capa', 'imagem', 'foto'],
+        ['capaURl', 'capaUrl', 'capaURL', 'capa', 'image', 'cover', 'url_capa', 'imagem', 'foto'],
         null
     ),
     capaUrl: pegarPrimeiroValor(
         item,
-        ['capaURl', 'capaUrl', 'capa', 'image', 'cover', 'url_capa', 'imagem', 'foto'],
+        ['capaURl', 'capaUrl', 'capaURL', 'capa', 'image', 'cover', 'url_capa', 'imagem', 'foto'],
         null
     ),
     capaURl: pegarPrimeiroValor(
         item,
-        ['capaURl', 'capaUrl', 'capa', 'image', 'cover', 'url_capa', 'imagem', 'foto'],
+        ['capaURl', 'capaUrl', 'capaURL', 'capa', 'image', 'cover', 'url_capa', 'imagem', 'foto'],
         null
     ),
     ano: pegarPrimeiroValor(item, ['ano', 'year', 'ano_publicacao'], 'N/A'),
