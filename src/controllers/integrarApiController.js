@@ -1,5 +1,4 @@
 const fontesBiblioteca = [
-  //  Fontes do 2TDS2
   {
     id: 'capitaes_arena',
     nomeLivro: 'Capitães da Areia',
@@ -47,7 +46,7 @@ const fontesBiblioteca = [
     authType: 'header',
     authHeaderName: 'x-api-key',
     timeoutMs: 8000,
-  }, //  Fontes do 2TDS1
+  },
   {
     id: 'atividade_portugues',
     nomeLivro: 'Atividade Português',

@@ -6,10 +6,8 @@ const router = express.Router()
 
 router.post('/', autenticarApikey, controller.criar)
 
-// Rota principal (usada pelo frontend)
 router.get('/', autenticarApikey, controller.buscarPorLivro)
 
-// Rota para listar todos (opcional, mas útil)
 router.get('/todos', autenticarApikey, controller.buscarTodos)
 
 router.get('/:id', autenticarApikey, controller.buscarPorId)

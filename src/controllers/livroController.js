@@ -179,7 +179,6 @@ export const buscarTodos = async (req, res) => {
 
         const livrosFormatados = registros.map((livro) => montarRespostaLivro(livro));
 
-        // Correção temporária para o Quarto de Despejo (id=4) - dados estavam misturados
         livrosFormatados.forEach((livro) => {
             if (livro && (livro.id === 4 || livro.id === '4')) {
                 livro.tituloPT = 'quarto de despejo';
@@ -221,7 +220,6 @@ export const buscarPorId = async (req, res) => {
 
         const livroFormatado = montarRespostaLivro(livro);
 
-        // Correção temporária para o Quarto de Despejo (id=4) - dados estavam misturados
         if (livroFormatado && (livroFormatado.id === 4 || livroFormatado.id === '4')) {
             livroFormatado.tituloPT = 'quarto de despejo';
             livroFormatado.tituloPT = 'Quarto de Despejo';

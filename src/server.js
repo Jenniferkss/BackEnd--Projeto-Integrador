@@ -28,7 +28,6 @@ const allowedOrigins = [
     process.env.FRONTEND_URL,
 ].filter(Boolean);
 
-// ✅ CORS antes de tudo
 app.use(
     cors({
         origin: (origin, callback) => {
@@ -52,13 +51,11 @@ app.get('/', (req, res) => {
     res.send('🚀 API funcionando');
 });
 
-// Rotas de fotos e arquivos
 app.use('/api/fotoEquipe', fotoEquipeRoutes);
 app.use('/api/fotoLivro', fotoLivroRoutes);
 app.use('/api/fotoAutor', arquivoLivroRoutes);
 app.use('/api/arquivoEquipe', arquivoEquipeRoutes);
 
-// Rotas principais
 app.use('/api/livro', livroRoutes);
 app.use('/api/reviews', reviewsRoutes);
 app.use('/api/equipe', equipeRoutes);
