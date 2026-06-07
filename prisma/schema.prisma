@@ -1,135 +1,171 @@
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
+  provider = "postgresql"
 }
 
 model Livro {
-    id                  Int              @id @default(autoincrement())
-    tituloPT            String
-    tituloEN            String
-    capaURl             String?
-    fotoAutor           String?
-    autor               String
-    anoPublicacao       Int?
-    generoPT            String
-    generoEN            String
-    descricaoPT         String           @db.Text
-    descricaoEN         String           @db.Text
-    personagens         String[]
-    fotoPersonagens      String[]
-    descricaoPersonagensPT String        @db.Text
-    descricaoPersonagensEN String          @db.Text
-    contextoHistoricoPT String           @db.Text
-    contextoHistoricoEN String           @db.Text
-    analisePT           String
-    analiseEN           String
-    reviews             Review[]
-    videoAulas          Videoaula[]
-    curiosidades        Curiosidade[]
-    fotosCuriosidades   String[]
-    dicasVestibular     DicaVestibular[]
-    simulados           Simulado[]
+  id                     Int                  @id @default(autoincrement())
+  tituloPT               String
+  tituloEN               String
+  capaURl                String?
+  fotoAutor              String?
+  autor                  String
+  anoPublicacao          Int?
+  generoPT               String
+  generoEN               String
+  descricaoPT            String
+  descricaoEN            String
+  personagens            String[]
+  fotoPersonagens        String[]
+  fotosCuriosidades      String[]
+  descricaoPersonagensPT String
+  descricaoPersonagensEN String
+  contextoHistoricoPT    String
+  contextoHistoricoEN    String
+  analisePT              String
+  analiseEN              String
+  conteudo_vestibular    ConteudoVestibular[]
+  curiosidades           Curiosidade[]
+  dicasVestibular        DicaVestibular[]
+  reviews                Review[]
+  simulados              Simulado[]
+  videoAulas             Videoaula[]
 
-    @@map("livro")
+  @@map("livro")
 }
 
 model Review {
-    id           Int      @id @default(autoincrement())
-    livroId      Int
-    livro        Livro    @relation(fields: [livroId], references: [id])
-    autor        String
-    comentarioPt String   @db.Text
-    comentarioEn String   @db.Text
-    avaliacao    Int // Ex: 1 a 5 estrelas
-    data         DateTime @default(now())
+  id           Int      @id @default(autoincrement())
+  livroId      Int
+  autor        String
+  comentarioPt String
+  comentarioEn String
+  avaliacao    Int
+  data         DateTime @default(now())
+  livro        Livro    @relation(fields: [livroId], references: [id])
 
-    @@map("reviews")
+  @@map("reviews")
 }
 
 model Videoaula {
-    id          Int     @id @default(autoincrement())
-    livroId     Int
-    livro       Livro   @relation(fields: [livroId], references: [id])
-    tituloPt    String
-    tituloEn    String
-    urlMidia    String
-    descricaoPt String? @db.Text
-    descricaoEn String? @db.Text
+  id          Int     @id @default(autoincrement())
+  livroId     Int
+  tituloPt    String
+  tituloEn    String
+  urlMidia    String
+  descricaoPt String?
+  descricaoEn String?
+  livro       Livro   @relation(fields: [livroId], references: [id])
 
-    @@map("videoaulas")
+  @@map("videoaulas")
 }
 
 model Curiosidade {
-    id         Int    @id @default(autoincrement())
-    livroId    Int
-    livro      Livro  @relation(fields: [livroId], references: [id])
-    tituloPt   String
-    tituloEn   String
-    conteudoPt String @db.Text
-    conteudoEn String @db.Text
+  id         Int    @id @default(autoincrement())
+  livroId    Int
+  tituloPt   String
+  tituloEn   String
+  conteudoPt String
+  conteudoEn String
+  livro      Livro  @relation(fields: [livroId], references: [id])
 
-    @@map("curiosidades")
+  @@map("curiosidades")
+}
+
+model ConteudoVestibular {
+  id                Int       @id @default(autoincrement())
+  livroid           Int
+  analisecriticapt  String?
+  analisecriticaen  String?
+  interpretacoespt  String?
+  interpretacoesen  String?
+  temasredacaopt    String[]
+  temasredacaoen    String[]
+  tituloprincipalpt String?
+  tituloprincipalen String?
+  textoprincipalpt  String?
+  textoprincipalen  String?
+  citacao           String?
+  vetor1titulopt    String?
+  vetor1tituloen    String?
+  vetor1textopt     String?
+  vetor1textoen     String?
+  vetor2titulopt    String?
+  vetor2tituloen    String?
+  vetor2textopt     String?
+  vetor2textoen     String?
+  vetor3titulopt    String?
+  vetor3tituloen    String?
+  vetor3textopt     String?
+  vetor3textoen     String?
+  frequenciafuvest  Int?      @default(30)
+  frequenciaunicamp Int?      @default(72)
+  frequenciaenem    Int?      @default(42)
+  createdat         DateTime? @default(now()) @db.Timestamp(6)
+  updatedat         DateTime? @default(now()) @db.Timestamp(6)
+  livro             Livro     @relation(fields: [livroid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("conteudo_vestibular")
 }
 
 model DicaVestibular {
-    id         Int    @id @default(autoincrement())
-    livroId    Int
-    livro      Livro  @relation(fields: [livroId], references: [id])
-    tituloPt   String
-    tituloEn   String
-    conteudoPt String @db.Text
-    conteudoEn String @db.Text
+  id         Int    @id @default(autoincrement())
+  livroId    Int
+  tituloPt   String
+  tituloEn   String
+  conteudoPt String
+  conteudoEn String
+  livro      Livro  @relation(fields: [livroId], references: [id])
 
-    @@map("dicas_vestibular")
+  @@map("dicas_vestibular")
 }
 
 model Simulado {
-    id       Int    @id @default(autoincrement())
-    livroId  Int
-    livro    Livro  @relation(fields: [livroId], references: [id])
-    tituloPt String
-    tituloEn String
+  id       Int       @id @default(autoincrement())
+  livroId  Int
+  tituloPt String
+  tituloEn String
+  questoes Questao[]
+  livro    Livro     @relation(fields: [livroId], references: [id])
 
-    questoes Questao[]
-
-    @@map("simulados")
+  @@map("simulados")
 }
 
 model Questao {
-    id                Int           @id @default(autoincrement())
-    simuladoId        Int
-    simulado          Simulado      @relation(fields: [simuladoId], references: [id])
-    perguntaPt        String        @db.Text
-    perguntaEn        String        @db.Text
-    alternativas      Alternativa[]
-    respostaCorretaPt String        @map("resposta_correta_pt")
-    respostaCorretaEn String        @map("resposta_correta_en")
-    explicacaoPt      String?       @db.Text
-    explicacaoEn      String?       @db.Text
+  id                Int           @id @default(autoincrement())
+  simuladoId        Int
+  perguntaPt        String
+  perguntaEn        String
+  respostaCorretaPt String        @map("resposta_correta_pt")
+  respostaCorretaEn String        @map("resposta_correta_en")
+  explicacaoPt      String?
+  explicacaoEn      String?
+  alternativas      Alternativa[]
+  simulado          Simulado      @relation(fields: [simuladoId], references: [id])
 
-    @@map("questoes")
+  @@map("questoes")
 }
 
 model Alternativa {
-    id        Int     @id @default(autoincrement())
-    questaoId Int
-    questao   Questao @relation(fields: [questaoId], references: [id])
-    textoPt   String?
-    textoEn   String?
+  id        Int     @id @default(autoincrement())
+  questaoId Int
+  textoPt   String?
+  textoEn   String?
+  questao   Questao @relation(fields: [questaoId], references: [id])
 
-    @@map("alternativas")
+  @@map("alternativas")
 }
 
 model Equipe {
-    id         Int    @id @default(autoincrement())
-    nome       String
-    curso      String
-    objetivoPt String @db.Text
-    objetivoEn String @db.Text
-    fotoEquipe String[]
+  id         Int      @id @default(autoincrement())
+  nome       String
+  curso      String
+  objetivoPt String
+  objetivoEn String
+  fotoEquipe String[]
 
-    @@map("equipes")
+  @@map("equipes")
 }

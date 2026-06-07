@@ -7,6 +7,7 @@ import alternativaRoutes from './routes/alternativaRoute.js';
 import arquivoEquipeRoutes from './routes/arquivoEquipeRoute.js';
 import arquivoLivroRoutes from './routes/arquivoLivroRoute.js';
 import curiosidadeRoutes from './routes/curiosidadeRoute.js';
+import conteudoVestibularRoutes from './routes/conteudoVestibularRoute.js'
 import dicaVestibularRoutes from './routes/dicaVestibularRoute.js';
 import equipeRoutes from './routes/equipeRoute.js';
 import fotoEquipeRoutes from './routes/fotoEquipeRoute.js';
@@ -16,6 +17,7 @@ import questaoRoutes from './routes/questaoRoute.js';
 import reviewsRoutes from './routes/reviewsRoute.js';
 import simuladoRoutes from './routes/simuladoRoute.js';
 import videoAulaRoutes from './routes/videoAulaRoute.js';
+
 
 const app = express();
 
@@ -62,6 +64,7 @@ app.use('/api/reviews', reviewsRoutes);
 app.use('/api/equipe', equipeRoutes);
 app.use('/api/videoaula', videoAulaRoutes);
 app.use('/api/curiosidade', curiosidadeRoutes);
+app.use('/api/conteudoVestibular', conteudoVestibularRoutes)
 app.use('/api/dicaVestibular', dicaVestibularRoutes);
 app.use('/api/simulado', simuladoRoutes);
 app.use('/api/questao', questaoRoutes);
