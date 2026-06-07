@@ -21,12 +21,12 @@ model Livro {
   personagens            String[]
   fotoPersonagens        String[]
   fotosCuriosidades      String[]
-  descricaoPersonagensPT String
-  descricaoPersonagensEN String
   contextoHistoricoPT    String
   contextoHistoricoEN    String
   analisePT              String
   analiseEN              String
+  descricaoPersonagensPT String[]
+  descricaoPersonagensEN String[]
   conteudo_vestibular    ConteudoVestibular[]
   curiosidades           Curiosidade[]
   dicasVestibular        DicaVestibular[]
