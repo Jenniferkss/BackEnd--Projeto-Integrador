@@ -42,7 +42,7 @@ const fontesBiblioteca = [
     urlCompleta:
       process.env.URL_LIVRO_MEMORIAS ||
       'https://projeto-clubyx.onrender.com/livros',
-    apiKey: process.env.API_KEY_MEMORIAS,
+    apiKey: process.env.API_KEY_MEMORIAS || 'Clubyx_dev',
     requerApiKey: true,
     authType: 'header',
     authHeaderName: 'x-api-key',
@@ -174,7 +174,7 @@ const normalizarLivro = (item) => ({
     tituloEn: pegarPrimeiroValor(item, ['tituloEN', 'tituloEn', 'titulo_en', 'titulo'], ''),
     tituloEN: pegarPrimeiroValor(item, ['tituloEN', 'tituloEn', 'titulo_en', 'titulo'], ''),
     autor: (() => {
-        const raw = pegarPrimeiroValor(item, ['autor', 'author', 'nomeAutor', 'autores'], null);
+    const raw = pegarPrimeiroValor(item, ['autor', 'author', 'nomeAutor', 'autores', 'escritor', 'escritorDoLivro', 'autorDoLivro', 'autorNome', 'name'], null);
         if (Array.isArray(raw)) {
             const primeiro = raw[0];
             if (typeof primeiro === 'object' && primeiro !== null) {
@@ -186,17 +186,17 @@ const normalizarLivro = (item) => ({
     })(),
     capa_url: pegarPrimeiroValor(
         item,
-        ['capaURl', 'capaUrl', 'capaURL', 'capa', 'image', 'cover', 'url_capa', 'imagem', 'foto'],
+        ['capaURl', 'capaUrl', 'capaURL', 'capa', 'image', 'cover', 'url_capa', 'imagem', 'foto', 'urlImagem', 'urlFoto', 'poster'],
         null
     ),
     capaUrl: pegarPrimeiroValor(
         item,
-        ['capaURl', 'capaUrl', 'capaURL', 'capa', 'image', 'cover', 'url_capa', 'imagem', 'foto'],
+        ['capaURl', 'capaUrl', 'capaURL', 'capa', 'image', 'cover', 'url_capa', 'imagem', 'foto', 'urlImagem', 'urlFoto', 'poster'],
         null
     ),
     capaURl: pegarPrimeiroValor(
         item,
-        ['capaURl', 'capaUrl', 'capaURL', 'capa', 'image', 'cover', 'url_capa', 'imagem', 'foto'],
+        ['capaURl', 'capaUrl', 'capaURL', 'capa', 'image', 'cover', 'url_capa', 'imagem', 'foto', 'urlImagem', 'urlFoto', 'poster'],
         null
     ),
     ano: pegarPrimeiroValor(item, ['ano', 'year', 'ano_publicacao'], 'N/A'),
